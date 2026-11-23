@@ -69,7 +69,7 @@
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim())) { say("Please enter a valid email address, so we can reply.", "err"); f.email.focus(); return; }
     if (f.message.value.trim().length < 5) { say("Please write a short message.", "err"); f.message.focus(); return; }
     send.disabled = true; send.textContent = "Sending…"; say("");
-    fetch("contact.php", { method: "POST", body: new FormData(form) })
+    fetch("/contact.php", { method: "POST", body: new FormData(form) })
       .then(function (r) { return r.json().catch(function () { return { ok: false, error: "server" }; }); })
       .then(function (j) {
         if (j && j.ok) {
@@ -88,6 +88,8 @@
         say(m, "err");
       });
   });
+
+  window.FS_contact = open;
 
   // Links with data-contact open the form instead of the visitor's email app
   document.addEventListener("click", function (e) {

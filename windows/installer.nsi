@@ -26,7 +26,7 @@ VIAddVersionKey "LegalCopyright" "FRACTALSCREEN"
 !if "${EDITION}" == "Premium"
 !define MUI_FINISHPAGE_TEXT "It will start automatically when your computer has been idle for a few minutes. It keeps running for as long as your subscription is active."
 !else
-!define MUI_FINISHPAGE_TEXT "It will start automatically when your computer has been idle for a few minutes. Your free trial runs for 2 weeks."
+!define MUI_FINISHPAGE_TEXT "It will start automatically when your computer has been idle for a few minutes. Your free trial runs for 4 weeks."
 !endif
 !define MUI_FINISHPAGE_RUN
 !define MUI_FINISHPAGE_RUN_TEXT "Preview it now"
@@ -98,7 +98,7 @@ Section "Install"
     DeleteRegValue HKCU "Software\FractalScreen" "LicenseUntil"
   ${EndIf}
 !else
-  ; Free trial: 14 days from the first install (kept even if uninstalled)
+  ; Free trial: 28 days from the first install (kept even if uninstalled)
   ReadRegDWORD $5 HKCU "Software\FractalScreenTrial" "Start"
   ${If} $5 == ""
     System::Call 'msvcrt::time(p 0)i.r5'

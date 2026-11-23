@@ -12,3 +12,6 @@ Thumbs.db
 # Never commit secrets
 .env
 *.key
+
+# Server secrets: Stripe key lives only on the server
+website/api/config.php

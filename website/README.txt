@@ -1,90 +1,93 @@
-FRACTALSCREEN website: how to go live
-=====================================
+FRACTALSCREEN website: launch guide (Hostinger + Stripe)
+========================================================
 
 WHAT'S IN THIS FOLDER
-  index.html          Landing page
-  download.html       Download / thank-you page (starts the right file automatically)
-  app.html            Web Player, free trial (3 fractals, 2 color schemes)
-  app-premium.html    Web Player, Premium (everything, including music)
-  manifest-*.webmanifest, sw.js   Let visitors install the Web Player as an app and use it offline
-  downloads/          One-click Windows installers (Free and Premium)
-  favicon-32.png, apple-touch-icon.png, logo-512.png
+  index.html              Landing page
+  app.html                Web Player, free trial (3 fractals, 2 color schemes, 4 weeks)
+  app-premium.html        Web Player, Premium (everything, including music)
+  download.html           Download / thank-you page; shows the license key after checkout
+  terms.html, privacy.html, refund.html, 404.html
+  downloads/              One-click Windows installers (Free and Premium)
+  api/                    License server (PHP): checks Stripe subscriptions
+  contact.php, contact.js Contact form, emails contact@fractalscreen.com
+  site.js                 Stripe checkout links and "Manage subscription" link  <-- you edit this
+  consent.js              Cookie banner (Google Analytics only after "Accept")
+  sw.js, manifest-*.webmanifest   Install the Web Player as an app / offline use
+  .htaccess, robots.txt, sitemap.xml
 
-1. UPLOAD TO CLOUDFLARE PAGES (free)
-   a. Unzip the download. Inside "fractalscreen" you'll find this "website" folder.
-   b. Cloudflare dashboard > Workers & Pages > Create application > Pages >
-      "Upload assets" (drag and drop). Name the project, e.g. fractalscreen.
-   c. Drag the "website" folder itself into the upload box (not the "fractalscreen"
-      folder around it), then Deploy. index.html must end up at the top level.
-   d. Project > Settings > Variables and secrets, add:
-        PADDLE_API_KEY   your Paddle API key (choose "Secret")
-        PADDLE_ENV       production   (or sandbox while testing)
-        PRICE_BUSINESS   your Business price ID (optional)
-      Then upload the folder once more (Create deployment) so the settings take effect.
-   e. Project > Custom domains > add fractalscreen.com (and www.fractalscreen.com).
-   The file _worker.js is the license server. It runs automatically with drag-and-drop
-   uploads and is never shown to visitors.
-   Updating the site later: Project > Create deployment > drag the folder in again.
+1. UPLOAD
+   Upload everything in this folder into public_html on Hostinger, keeping the
+   folders. Hostinger's File Manager hides files starting with a dot: turn on
+   "Show hidden files" and check that .htaccess, api/.htaccess and
+   downloads/.htaccess are there.
+   In Hostinger, make sure SSL is active and "Force HTTPS" is on.
 
-2. TURN ON PAYMENTS (Paddle)
-   a. In Paddle, create a product "FRACTALSCREEN" with three prices:
-        Premium yearly   $34.99 / year
-        Premium monthly  $4.99 / month
-        Business         $6 / month (let customers change the quantity = number of screens)
-   b. Copy your client-side token (Developer tools > Authentication) and the three price IDs
-      (they start with pri_).
-   c. Open index.html, find FS_CONFIG near the bottom, and paste them in.
-   d. In Paddle, add your website domain as an approved domain.
-   After payment, the customer goes to download.html, which shows their license key
-   (their Paddle subscription ID), copies it, and offers the Premium download.
+2. EMAIL
+   Hostinger > Emails: create the mailbox contact@fractalscreen.com.
+   The contact form sends from it, and customers write to it.
 
-3. REPLACE THE PLACEHOLDERS
-   Search all .html files for "[" : [YOUR EMAIL], [YEAR], [PAYMENT PROVIDER] (write "Paddle").
+3. STRIPE (do it in Test mode first, then repeat in Live mode)
+   a. Product catalog > add products with recurring prices:
+        FRACTALSCREEN Premium   $4.99 / month   and   $34.99 / year
+        FRACTALSCREEN Business  $6 / month (per screen)
+   b. Payment Links > create one link per price:
+        Premium yearly, Premium monthly, Business (turn on "Let customers adjust
+        quantity" for Business, so they can choose the number of screens).
+      For each link, under "After payment" choose "Don't show confirmation page,
+      redirect customers to your website" and enter:
+        Premium links:  https://fractalscreen.com/download.html?plan=premium&session_id={CHECKOUT_SESSION_ID}
+        Business link:  https://fractalscreen.com/download.html?plan=business&session_id={CHECKOUT_SESSION_ID}
+      (type {CHECKOUT_SESSION_ID} exactly like that; Stripe fills it in)
+   c. Settings > Billing > Customer portal: activate it, allow customers to cancel,
+      and copy the "Login link" (https://billing.stripe.com/p/login/...).
+   d. Open site.js and paste the three payment links and the portal link at the top.
+   e. Developers > API keys > Create restricted key, with Read access to
+      "Checkout Sessions" and "Subscriptions" only. Copy it.
+   f. In api/, copy config.example.php to config.php and paste the key into it.
+      (config.php is private: the server never shows it, and it's not in GitHub.)
+      For Business customers to be recognised, also add the Business price ID.
+   g. Settings > Business > Public details: add the website, support email
+      contact@fractalscreen.com, and link Terms, Privacy and Refund pages.
 
-4. CODE-SIGN THE WINDOWS INSTALLERS (recommended)
-   Until the installers are signed, Windows SmartScreen shows "Windows protected your PC"
-   (users click More info > Run anyway). A code-signing certificate removes most of this.
-   Sign both FractalScreen-*-Setup.exe files before uploading.
+4. TEST (Stripe Test mode, card 4242 4242 4242 4242, any future date, any CVC)
+   - Buy Premium monthly on fractalscreen.com -> you land on download.html and see a
+     key starting with sub_.
+   - Open https://fractalscreen.com/api/verify.php?key=<that key>
+     -> {"active":true,...}
+   - Install the Premium Windows app with the key, and open app-premium.html: both
+     should activate.
+   - Cancel in the customer portal: Premium keeps working until the period ends.
+   Then switch site.js links and config.php key to Live mode.
+
+5. CHECK
+   - Footer links: Terms, Privacy, Refunds, Manage subscription, Cookie settings.
+   - Contact form: send yourself a message.
+   - Google Analytics > Reports > Realtime: accept cookies on the site, you should
+     appear within a minute.
+
+HOW THE TIME LIMITS WORK
+   Free trial: 3 fractals for 4 weeks (28 days) from the first install (Windows) or
+     first visit (Web Player). The time left is shown in the settings. Afterwards the
+     fractals stop and a reminder to get Premium is shown. Uninstalling doesn't reset it.
+   Premium and Business: the license key is the Stripe subscription ID (sub_...).
+     The app checks it with api/verify.php every 12 hours, and keeps working offline
+     for 3 days past the paid period. Active means: active, trialing or past_due
+     (Stripe is retrying a payment). After cancelling, it runs until the end of the
+     period already paid, then stops.
 
 WHAT THE WINDOWS INSTALLER DOES
    - Installs for the current user only (no admin password) into %LOCALAPPDATA%\FractalScreen
-   - Sets FRACTALSCREEN as the active screensaver (5 minutes idle, unless the user already
-     chose a time)
+   - Sets FRACTALSCREEN as the active screensaver (5 minutes idle, unless already set)
    - Adds a FRACTALSCREEN icon (with the logo) to the desktop and the Start menu.
-     It opens the FRACTALSCREEN window: choose fractal, colors and speed, press Play now.
+     It opens the FRACTALSCREEN window: choose fractal, colors, speed, press Play now.
    - Adds "Play FRACTALSCREEN now" and "Uninstall FRACTALSCREEN" to the Start menu
-   - Appears in Settings > Apps for uninstalling
+   - Premium: asks for the license key (filled in automatically from the download page)
    Installing Premium over Free simply upgrades it.
 
-HOW THE TIME LIMITS WORK
-   Free trial: 3 fractals for 14 days from the first install (Windows) or first visit (web).
-     The time left is shown in the settings. After 14 days the fractals stop and a
-     reminder to get Premium is shown instead. Uninstalling doesn't reset the trial.
-   Premium and Business: the license key is checked with the license server. The
-   screensaver runs while the subscription is paid (active, or Paddle is retrying a
-   failed payment). It re-checks every 12 hours and keeps working offline for 3 days
-   past the paid period. When a subscription is cancelled, it runs until the end of the
-   period already paid, then stops.
-
-WEB PLAYER
-   Works in any modern browser (Mac, PC, Chromebook, tablets, smart TVs). Visitors leave it
-   open; after 1 to 15 minutes without mouse, keyboard or touch activity (3 minutes by
-   default) it goes full screen with fractals and keeps the screen awake while playing.
-   Browsers only let a page react while it is open and visible, so it can't start when the
-   tab is closed or minimised. That's why the desktop app is recommended on Windows.
-
-CONTACT FORM
-   contact.js shows the form; contact.php emails each message to contact@fractalscreen.com,
-   with the visitor's address as Reply-To, so you can simply press Reply.
-   Needs: PHP hosting (Hostinger has it) and a mailbox contact@fractalscreen.com created in
-   Hostinger > Emails, because messages are sent from that address.
-   Spam protection: a hidden robot trap and a limit of 5 messages per visitor per hour.
-
 GOOD TO KNOW
-   - The installer files themselves can be shared, but Premium won't run without a paid key.
-     One key can currently be used on any number of computers.
-   - A determined user could reset the free trial by editing the Windows registry or
-     clearing browser data. That's normal for simple trials; stronger protection needs
-     user accounts.
-   - Windows Premium doesn't have music yet (the Premium web version does).
-   - Mac, Android and iPhone versions are marked "coming soon" on the site.
+   - Until the installers are code-signed, Windows SmartScreen shows "Windows protected
+     your PC" (More info > Run anyway), and Hostinger's malware scanner may quarantine
+     them. A code-signing certificate fixes both.
+   - One license key works on any number of the customer's devices.
+   - A determined user could reset the free trial by editing the registry or clearing
+     browser data. Normal for simple trials.

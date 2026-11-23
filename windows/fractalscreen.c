@@ -18,7 +18,7 @@
 #ifndef API_BASE
 #define API_BASE L"https://fractalscreen.com/api"
 #endif
-#define TRIAL_DAYS 14          /* Free edition runs for 2 weeks */
+#define TRIAL_DAYS 28          /* Free edition runs for 4 weeks */
 #define GRACE_DAYS 3           /* Premium keeps working offline this long after the paid period */
 #define RECHECK_SECONDS (12 * 3600)
 
@@ -155,7 +155,7 @@ static void formatDate(DWORD unix, wchar_t *out, int cch) {
 }
 
 #ifndef PREMIUM
-/* ---------- Free edition: 2-week trial ---------- */
+/* ---------- Free edition: 4-week trial ---------- */
 static DWORD trialStart(void) {
   DWORD s = regGetK(TRIAL_KEY, L"Start", 0);
   if (!s) { s = (DWORD)time(NULL); regSetK(TRIAL_KEY, L"Start", s); }
@@ -197,7 +197,7 @@ static int verifyLicense(const wchar_t *key, DWORD *until) {
     if ((c >= L'a' && c <= L'z') || (c >= L'A' && c <= L'Z') || (c >= L'0' && c <= L'9') || c == L'_' || c == L'-') clean[j++] = c; }
   clean[j] = 0;
   if (!j) return 0;
-  wchar_t q[160]; swprintf(q, 160, L"/verify?key=%ls", clean);
+  wchar_t q[160]; swprintf(q, 160, L"/verify.php?key=%ls", clean);
   char buf[2048];
   if (!httpGet(q, buf, sizeof(buf))) return -1;
   const char *u = strstr(buf, "\"until_unix\":"); *until = u ? (DWORD)strtoul(u + 13, NULL, 10) : 0;
@@ -243,7 +243,7 @@ static void decideAccess(void) {
   }
 #else
   if (trialSecondsLeft() <= 0) {
-    gLockTitle = L"Your 2-week free trial has ended";
+    gLockTitle = L"Your 4-week free trial has ended";
     gLockText = L"Get FRACTALSCREEN Premium to keep the fractals running.";
   }
 #endif
@@ -524,7 +524,7 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
 #ifndef PREMIUM
     { wchar_t msg[200]; long left = trialSecondsLeft();
       if (left > 0) swprintf(msg, 200, L"Free trial: %ld days, %ld hours left.\nPremium unlocks all 5 fractals, 4 color schemes and cycling.", left / 86400, (left % 86400) / 3600);
-      else swprintf(msg, 200, L"Your 2-week free trial has ended.\nGet Premium to keep the fractals running.");
+      else swprintf(msg, 200, L"Your 4-week free trial has ended.\nGet Premium to keep the fractals running.");
       mk(h, L"STATIC", msg, 0, 20, 166, 410, 52, 0); }
     mk(h, L"BUTTON", L"Get Premium", WS_TABSTOP, 20, 236, 110, 30, ID_UPGRADE);
 #else

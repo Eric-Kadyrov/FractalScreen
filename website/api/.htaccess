@@ -1,0 +1,20 @@
+# FRACTALSCREEN license server
+Options -Indexes
+
+# Short addresses: /api/verify and /api/license (older Windows installers use /api/verify)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^verify/?$ verify.php [L,QSA]
+  RewriteRule ^license/?$ license.php [L,QSA]
+</IfModule>
+
+# Settings and helpers are never served
+<FilesMatch "^(config|config\.example|stripe)\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

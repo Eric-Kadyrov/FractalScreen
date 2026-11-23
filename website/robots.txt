@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /api/
+Disallow: /download.html
+Allow: /
+
+Sitemap: https://fractalscreen.com/sitemap.xml

@@ -7,14 +7,26 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 </script>
+<script>
+  // Cookie consent: Analytics stays off until the visitor accepts (see consent.js)
+  gtag('consent', 'default', {analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'});
+  try { if (localStorage.getItem('fs-consent') === 'granted') gtag('consent', 'update', {analytics_storage: 'granted'}); } catch (e) {}
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>FRACTALSCREEN: fractal screensavers with focus music</title>
-<meta name="description" content="Endless, colorful fractal screensavers with calm focus music. One-click install for Windows, plus a web version for any device.">
+<meta name="description" content="Endless, colorful fractal screensavers with calm focus music. One-click install for Windows, or play on any device with the Web Player. Free for 4 weeks.">
+<link rel="canonical" href="https://fractalscreen.com/">
 <link rel="icon" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta property="og:title" content="FRACTALSCREEN">
-<meta property="og:image" content="logo-512.png">
+<meta name="theme-color" content="#101233">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FRACTALSCREEN">
+<meta property="og:title" content="FRACTALSCREEN: fractal screensavers with focus music">
+<meta property="og:description" content="Endless, colorful fractal screensavers with calm focus music. Free for 4 weeks.">
+<meta property="og:url" content="https://fractalscreen.com/">
+<meta property="og:image" content="https://fractalscreen.com/logo-512.png">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;family=Instrument+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
 <style>
@@ -33,6 +45,7 @@ details[open] .fs-plus{transform:rotate(45deg)}
 @media (min-width:640px) and (max-width:959px){.fs-pricing>:last-child{grid-column:1/-1}}
 </style>
 <style>html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script src="consent.js" defer></script>
 <script src="contact.js" defer></script>
 </head>
 <body>
@@ -62,7 +75,7 @@ details[open] .fs-plus{transform:rotate(45deg)}
 <a id="fs-hero-cta" href="downloads/FractalScreen-Free-Setup.exe" download style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 28px; border-radius: 999px; background: #FFC27A; color: #101233; font-weight: 600; font-size: 18px; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"></path></svg><span id="fs-hero-cta-label">Download the free trial</span></a>
 <a id="fs-hero-alt" href="app.html" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; font-size: 18px; text-decoration: none">Play in your browser</a>
 </div>
-<p style="margin: 0; color: #B5B3D6; font-size: 15px">Free for 2 weeks, no card needed. Install the Windows app in one click, or play it on any device with the <a href="app.html">Web Player</a>.</p>
+<p style="margin: 0; color: #B5B3D6; font-size: 15px">Free for 4 weeks, no card needed. Install the Windows app in one click, or play it on any device with the <a href="app.html">Web Player</a>.</p>
 </div>
 </div>
 </header>
@@ -165,11 +178,11 @@ details[open] .fs-plus{transform:rotate(45deg)}
 <div style="display: flex; flex-direction: column">
 <div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
 <h3 style="margin: 0; font-size: 21px; font-weight: 600">Focus music that never loops</h3>
-<p style="margin: 0; color: #CFCDEA">Original ambient electronic music, composed live as it plays. Soft pads, a gentle pulse and nothing that grabs your attention.</p>
+<p style="margin: 0; color: #CFCDEA">Original ambient electronic music, composed live as it plays. Soft pads, a gentle pulse and nothing that grabs your attention. Plays in the Web Player, and is coming to the Windows app.</p>
 </div>
 <div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
 <h3 style="margin: 0; font-size: 21px; font-weight: 600">Your colors, your pace</h3>
-<p style="margin: 0; color: #CFCDEA">Choose a color scheme or make your own, set the animation speed, and let it cycle through every fractal or stay on a favourite.</p>
+<p style="margin: 0; color: #CFCDEA">Choose from four color schemes, set the animation speed, and let it cycle through every fractal or stay on a favourite.</p>
 </div>
 <div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
 <h3 style="margin: 0; font-size: 21px; font-weight: 600">Sharp on any screen</h3>
@@ -219,17 +232,17 @@ details[open] .fs-plus{transform:rotate(45deg)}
 
 <section id="pricing" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; box-sizing: border-box">
 <h2 style="margin: 0 0 12px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Simple pricing</h2>
-<p style="margin: 0 0 44px; color: #B5B3D6">Try it free for 2 weeks. Premium keeps it running for as long as you’re subscribed. Cancel anytime.</p>
+<p style="margin: 0 0 44px; color: #B5B3D6">Try it free for 4 weeks. Premium keeps it running for as long as you’re subscribed. Cancel anytime.</p>
 <div class="fs-pricing" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: stretch">
 
 <div style="display: flex; flex-direction: column; gap: 22px; padding: 32px; border-radius: 18px; border: 1px solid rgba(241,238,255,0.18)">
 <div style="display: flex; flex-direction: column; gap: 6px">
 <h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 24px; font-weight: 700">Free trial</h3>
-<p style="margin: 0; color: #B5B3D6">2 weeks, no card needed</p>
+<p style="margin: 0; color: #B5B3D6">4 weeks, no card needed</p>
 </div>
-<p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$0 <span style="font-size: 17px; color: #B5B3D6; font-weight: 400">for 14 days</span></p>
+<p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$0 <span style="font-size: 17px; color: #B5B3D6; font-weight: 400">for 4 weeks</span></p>
 <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
-<li>3 fractals for 2 weeks</li>
+<li>3 fractals for 4 weeks</li>
 <li>2 color schemes</li>
 <li>Windows app and Web Player</li>
 <li>HD resolution</li>
@@ -254,8 +267,8 @@ details[open] .fs-plus{transform:rotate(45deg)}
 <p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$4.99 <span style="font-size: 17px; color: #43456E; font-weight: 400">per month, or $34.99 per year</span></p>
 <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #2A2C55">
 <li>Keeps running for as long as your plan is paid</li>
-<li>All fractals, plus a new one every month</li>
-<li>All color schemes and custom colors</li>
+<li>All 5 fractals, plus every new one we release</li>
+<li>All 4 color schemes</li>
 <li>Focus music (Web Player now, Windows soon)</li>
 <li>4K and multiple monitors</li>
 <li>Windows app and Web Player, with Mac, Android and iPhone as they launch</li>
@@ -286,7 +299,6 @@ details[open] .fs-plus{transform:rotate(45deg)}
 <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
 <li>Everything in Premium</li>
 <li>License for lobbies, cafés, offices and waiting rooms</li>
-<li>Your logo shown between fractals</li>
 <li>Invoices for your company</li>
 </ul>
 <a href="#pricing" data-checkout="business" style="margin-top: auto; display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; text-decoration: none">Get Business</a>
@@ -330,7 +342,7 @@ details[open] .fs-plus{transform:rotate(45deg)}
 </details>
 
 <details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
-<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">What happens after the 2-week free trial?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">What happens after the 4-week free trial?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
 <p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">The fractals stop and FRACTALSCREEN shows a short reminder instead. Get Premium and they come straight back, with all five fractals and every color scheme.</p>
 </details>
 
@@ -341,7 +353,7 @@ details[open] .fs-plus{transform:rotate(45deg)}
 
 <details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
 <summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Can I cancel anytime?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
-<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Yes. Premium keeps running until the end of the period you’ve paid for, then stops. Renew anytime to bring it back.</p>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Yes. Choose Manage subscription at the bottom of this page, sign in with the email you paid with, and cancel in a few clicks. Premium keeps running until the end of the period you’ve paid for, then stops.</p>
 </details>
 
 <details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
@@ -365,8 +377,11 @@ details[open] .fs-plus{transform:rotate(45deg)}
 <div style="max-width: 1200px; margin: 0 auto; padding: 36px 24px 48px; box-sizing: border-box; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; color: #B5B3D6; font-size: 15px">
 <a href="#top" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; letter-spacing: 0.08em; color: #F1EEFF; text-decoration: none"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 40 40" fill="none" style="flex: none; display: block"><defs><linearGradient id="fsLogoGradFoot" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFC27A"></stop><stop offset="0.55" stop-color="#FF8FB1"></stop><stop offset="1" stop-color="#8C7CFF"></stop></linearGradient></defs><rect x="0.75" y="0.75" width="38.5" height="38.5" rx="10" fill="#1C1F55" stroke="rgba(241,238,255,0.22)" stroke-width="1.5"></rect><g stroke="url(#fsLogoGradFoot)" stroke-width="1.4" stroke-linejoin="round"><polygon points="32.74,32.74 7.26,32.74 7.26,7.26 32.74,7.26" stroke-opacity="1.00"></polygon><polygon points="28.26,32.25 7.75,28.26 11.74,7.75 32.25,11.74" stroke-opacity="0.94"></polygon><polygon points="24.73,31.15 8.85,24.73 15.27,8.85 31.15,15.27" stroke-opacity="0.88"></polygon><polygon points="22.07,29.72 10.28,22.07 17.93,10.28 29.72,17.93" stroke-opacity="0.82"></polygon><polygon points="20.14,28.14 11.86,20.14 19.86,11.86 28.14,19.86" stroke-opacity="0.76"></polygon><polygon points="18.84,26.58 13.42,18.84 21.16,13.42 26.58,21.16" stroke-opacity="0.70"></polygon><polygon points="18.04,25.11 14.89,18.04 21.96,14.89 25.11,21.96" stroke-opacity="0.64"></polygon><polygon points="17.62,23.81 16.19,17.62 22.38,16.19 23.81,22.38" stroke-opacity="0.58"></polygon><polygon points="17.49,22.69 17.31,17.49 22.51,17.31 22.69,22.51" stroke-opacity="0.52"></polygon></g><circle cx="20" cy="20" r="1.6" fill="#FFC27A"></circle></svg><span>FRACTALSCREEN</span></a>
 <div style="display: flex; gap: 24px; flex-wrap: wrap">
-<a href="#top">Terms</a>
-<a href="#top">Privacy</a>
+<a href="terms.html">Terms</a>
+<a href="privacy.html">Privacy</a>
+<a href="refund.html">Refunds</a>
+<a href="#pricing" data-portal="">Manage subscription</a>
+<a href="#cookies" data-cookie-settings="">Cookie settings</a>
 <a href="mailto:contact@fractalscreen.com" data-contact="">Contact</a>
 </div>
 <span>© 2026 FRACTALSCREEN. Payments by Stripe.</span>
@@ -374,7 +389,6 @@ details[open] .fs-plus{transform:rotate(45deg)}
 </footer>
 
 </div>
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <script>class DCLogic{constructor(p){this.props=p||{};}}
 
 class Component extends DCLogic {
@@ -584,71 +598,6 @@ fsPage.tileEls=Array.prototype.slice.call(document.querySelectorAll('.fs-tile'))
 fsPage.mounted=true;
 fsPage.componentDidMount();
 </script>
-<script>
-/* ===== FRACTALSCREEN site settings: fill these in after setting up Paddle ===== */
-var FS_CONFIG = {
-  paddleToken: "PADDLE_CLIENT_TOKEN",     // Paddle > Developer tools > Authentication > client-side token
-  paddleSandbox: false,                   // true while testing with a Paddle sandbox account
-  prices: {
-    "premium-yearly":  "PRICE_ID_PREMIUM_YEARLY",   // $34.99 / year
-    "premium-monthly": "PRICE_ID_PREMIUM_MONTHLY",  // $4.99 / month
-    "business":        "PRICE_ID_BUSINESS_MONTHLY"  // $6 / screen / month
-  }
-};
-/* ============================================================================ */
-(function () {
-  var ua = navigator.userAgent;
-  var isWindows = /Windows NT/i.test(ua);
-
-  // Free downloads go through the download page, which starts the file and shows the 3 install steps
-  var freeLinks = document.querySelectorAll('a[href$="FractalScreen-Free-Setup.exe"]');
-  for (var i = 0; i < freeLinks.length; i++) { freeLinks[i].href = "download.html?plan=free"; freeLinks[i].removeAttribute("download"); }
-
-  // Hero button: Windows gets the installer, everyone else gets the web version
-  var cta = document.getElementById("fs-hero-cta"), label = document.getElementById("fs-hero-cta-label");
-  // Mac, phones, tablets: the Web Player is the main option, the Windows download becomes the second button
-  var alt = document.getElementById("fs-hero-alt");
-  if (cta && !isWindows) {
-    cta.href = "app.html"; cta.removeAttribute("download");
-    if (label) label.textContent = "Open the Web Player";
-    var svg = cta.querySelector("svg"); if (svg) svg.style.display = "none";
-    if (alt) { alt.href = "download.html?plan=free"; alt.textContent = "Download for Windows"; }
-  }
-
-  var paddleReady = false, checkoutPlan = "premium";
-  try {
-    if (window.Paddle && FS_CONFIG.paddleToken.indexOf("PADDLE_") !== 0) {
-      if (FS_CONFIG.paddleSandbox) Paddle.Environment.set("sandbox");
-      Paddle.Initialize({
-        token: FS_CONFIG.paddleToken,
-        eventCallback: function (ev) {
-          // After payment, go to the download page with this purchase's transaction, which fetches the license key
-          if (ev && ev.name === "checkout.completed" && ev.data && ev.data.transaction_id) {
-            location.href = "download.html?plan=" + checkoutPlan + "&txn=" + encodeURIComponent(ev.data.transaction_id);
-          }
-        }
-      });
-      paddleReady = true;
-    }
-  } catch (e) { paddleReady = false; }
-
-  var buttons = document.querySelectorAll("[data-checkout]");
-  for (var j = 0; j < buttons.length; j++) {
-    buttons[j].addEventListener("click", function (e) {
-      e.preventDefault();
-      var plan = this.getAttribute("data-checkout");
-      var price = FS_CONFIG.prices[plan];
-      var group = plan.indexOf("business") === 0 ? "business" : "premium";
-      if (!paddleReady || !/^pri_[a-z0-9]+$/.test(price || "")) {
-        alert("Checkout isn’t switched on yet. Add your Paddle token and price IDs at the top of the site script.");
-        return;
-      }
-      checkoutPlan = group;
-      Paddle.Checkout.open({ items: [{ priceId: price, quantity: 1 }] });
-    });
-  }
-})();
-
-</script>
+<script src="site.js"></script>
 </body>
 </html>

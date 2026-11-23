@@ -7,6 +7,11 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 </script>
+<script>
+  // Cookie consent: Analytics stays off until the visitor accepts (see consent.js)
+  gtag('consent', 'default', {analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'});
+  try { if (localStorage.getItem('fs-consent') === 'granted') gtag('consent', 'update', {analytics_storage: 'granted'}); } catch (e) {}
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>FRACTALSCREEN Web Player</title>
@@ -176,6 +181,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
     </form>
   </div>
   <p class="note">The Web Player watches for inactivity while its page is open and visible, so keep it in a browser window or install it as an app. For a screensaver that starts by itself anytime, even with every window closed, <a href="download.html?plan=premium">download the Windows app</a>. The Mac app is coming soon.</p>
+  <p class="note"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="index.html#pricing" data-portal="">Manage subscription</a> · <a href="#cookies" data-cookie-settings="">Cookie settings</a></p>
 </div>
 
 <div id="saver" aria-hidden="true">
@@ -735,7 +741,7 @@ window.FS_unlock = function () {
     info.textContent = "Premium needs an active subscription.";
   }
   function verify(key) {
-    return fetch(API + "/verify?key=" + encodeURIComponent(key), { cache: "no-store" })
+    return fetch(API + "/verify.php?key=" + encodeURIComponent(key), { cache: "no-store" })
       .then(function (r) {
         if (!r.ok && r.status !== 404) throw new Error("server");
         return r.json();
@@ -766,5 +772,6 @@ window.FS_unlock = function () {
   }, 60000);
 })();
 </script>
+<script src="site.js"></script>
 </body>
 </html>

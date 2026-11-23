@@ -15,12 +15,15 @@ Live at **https://fractalscreen.com**.
 
 - `index.html`: landing page (fractal gallery, pricing, FAQ, contact form)
 - `app.html`, `app-premium.html`: the Web Player (free 2-week trial, and Premium)
-- `download.html`: download and thank-you page; shows the license key after checkout
+- `download.html`: download and thank-you page; shows the license key after Stripe checkout
+- `terms.html`, `privacy.html`, `refund.html`, `404.html`: legal and error pages
 - `downloads/`: the Windows installers `FractalScreen-Free-Setup.exe` and `FractalScreen-Premium-Setup.exe`
 - `contact.php`, `contact.js`: contact form that emails contact@fractalscreen.com
-- `_worker.js`: license server for Cloudflare Pages (checks subscriptions with the payment provider)
+- `api/`: license server in PHP (`verify.php`, `license.php`): checks Stripe subscriptions. Copy `config.example.php` to `config.php` on the server and add the Stripe key; `config.php` is never committed.
+- `site.js`: Stripe Payment Links and customer portal link
+- `consent.js`: cookie banner; Google Analytics runs only after visitors accept
 - `sw.js`, `manifest-*.webmanifest`: let visitors install the Web Player as an app
-- `README.txt`: deployment and setup notes
+- `README.txt`: step-by-step launch guide (Hostinger, Stripe, testing)
 
 ### `windows/`
 
@@ -31,12 +34,13 @@ Live at **https://fractalscreen.com**.
 
 ## Plans
 
-- **Free trial**: 3 fractals for 14 days
+- **Free trial**: 3 fractals for 4 weeks, Windows app and Web Player
 - **Premium**: $4.99/month or $34.99/year, all fractals and colors, music, runs while subscribed
 - **Business**: $6 per screen per month, for screens in public spaces
 
 ## Status
 
-- Payments: checkout buttons are wired for Paddle and still need to be switched to Stripe.
-- Analytics: Google tag `G-26B6J0MX81` on every page.
+- Payments: Stripe Payment Links and customer portal; license key = Stripe subscription ID.
+- Hosting: Hostinger (PHP).
+- Analytics: Google tag `G-26B6J0MX81` on every page, with cookie consent.
 - Mac, Android and iPhone apps: planned.

@@ -7,6 +7,11 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 </script>
+<script>
+  // Cookie consent: Analytics stays off until the visitor accepts (see consent.js)
+  gtag('consent', 'default', {analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'});
+  try { if (localStorage.getItem('fs-consent') === 'granted') gtag('consent', 'update', {analytics_storage: 'granted'}); } catch (e) {}
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Download FRACTALSCREEN</title>
@@ -66,7 +71,7 @@ li p{margin:0;color:#CFCDEA}
   var params = new URLSearchParams(location.search);
   var plan = (params.get("plan") || "free").toLowerCase();
   if (plan !== "premium" && plan !== "business") plan = "free";
-  var paid = plan !== "free", txn = params.get("txn") || "";
+  var paid = plan !== "free", sessionId = params.get("session_id") || "";
   var file = paid ? "downloads/FractalScreen-Premium-Setup.exe" : "downloads/FractalScreen-Free-Setup.exe";
   var web = paid ? "app-premium.html" : "app.html";
   var name = paid ? "FractalScreen-Premium-Setup.exe" : "FractalScreen-Free-Setup.exe";
@@ -92,7 +97,7 @@ li p{margin:0;color:#CFCDEA}
         (paid ? 'Your key is already filled in. If Windows says it protected your PC, click <strong>More info</strong>, then <strong>Run anyway</strong>.'
               : 'If Windows says it protected your PC, click <strong>More info</strong>, then <strong>Run anyway</strong>.') + '</p></li>' +
       '<li><span class="num">3</span><h2>Done</h2><p>' + (paid ? 'FRACTALSCREEN runs for as long as your subscription is active.'
-              : 'Your 2-week free trial starts now. The time left is shown in FRACTALSCREEN settings.') + '</p></li>';
+              : 'Your 4-week free trial starts now. The time left is shown in FRACTALSCREEN settings.') + '</p></li>';
     $("dlBtn").addEventListener("click", function () { copyKey(); });
     if (!paid) setTimeout(function () { location.href = file; }, 900);   // free: one click on the site is enough
   } else {
@@ -104,7 +109,7 @@ li p{margin:0;color:#CFCDEA}
     $("steps").innerHTML =
       '<li><span class="num">1</span><h2>Open it</h2><p>Open the Web Player. In Chrome or Edge you can install it as an app; on a phone or tablet, add it to your home screen.</p></li>' +
       '<li><span class="num">2</span><h2>Pick a look</h2><p>Choose a fractal, colors and how many minutes to wait before it starts.</p></li>' +
-      '<li><span class="num">3</span><h2>Step away</h2><p>' + (paid ? 'It runs for as long as your subscription is active.' : 'Your 2-week free trial starts the first time you open it.') + '</p></li>';
+      '<li><span class="num">3</span><h2>Step away</h2><p>' + (paid ? 'It runs for as long as your subscription is active.' : 'Your 4-week free trial starts the first time you open it.') + '</p></li>';
     $("dlBtn").addEventListener("click", function () { copyKey(); });
   }
 
@@ -117,10 +122,10 @@ li p{margin:0;color:#CFCDEA}
     $("copyBtn").addEventListener("click", function () {
       copyKey().then(function (ok) { $("copyBtn").textContent = ok ? "Copied" : "Select and copy"; });
     });
-    if (txn) {
+    if (/^cs_(test|live)_/.test(sessionId)) {
       var tries = 0;
       (function poll() {
-        fetch("/api/license?txn=" + encodeURIComponent(txn), { cache: "no-store" })
+        fetch("/api/license.php?session_id=" + encodeURIComponent(sessionId), { cache: "no-store" })
           .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
           .then(function (res) {
             if (res.j && res.j.key) { showKey(res.j.key); return; }
@@ -136,7 +141,7 @@ li p{margin:0;color:#CFCDEA}
       showKey(licenseKey);
     } else {
       $("keyText").textContent = "Shown after checkout";
-      $("keyNote").innerHTML = "Lost your key? <a href=\"mailto:contact@fractalscreen.com\" data-contact=\"\">Email us</a> with your Paddle receipt and we’ll send it again.";
+      $("keyNote").innerHTML = "Lost your key? <a href=\"mailto:contact@fractalscreen.com\" data-contact=\"\">Email us</a> with the email address you paid with, and we’ll send it again.";
     }
   }
 
