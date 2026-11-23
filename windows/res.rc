@@ -1,0 +1,28 @@
+#include <windows.h>
+1 ICON "fractalscreen.ico"
+STRINGTABLE
+BEGIN
+  1 "FRACTALSCREEN"
+END
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "FRACTALSCREEN"
+      VALUE "FileDescription", "FRACTALSCREEN"
+      VALUE "FileVersion", "1.0.0"
+      VALUE "ProductName", "FRACTALSCREEN"
+      VALUE "ProductVersion", "1.0.0"
+      VALUE "OriginalFilename", "FractalScreen.scr"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

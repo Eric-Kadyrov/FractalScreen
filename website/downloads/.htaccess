@@ -1,0 +1,10 @@
+# Serve the Windows installers as downloads (Hostinger / Apache / LiteSpeed)
+<FilesMatch "\.exe$">
+  ForceType application/octet-stream
+  <IfModule mod_headers.c>
+    Header set Content-Disposition "attachment"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "no-cache"
+  </IfModule>
+</FilesMatch>
+Options -Indexes

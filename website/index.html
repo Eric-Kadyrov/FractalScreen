@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtm.js?id=G-26B6J0MX81"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FRACTALSCREEN: fractal screensavers with focus music</title>
+<meta name="description" content="Endless, colorful fractal screensavers with calm focus music. One-click install for Windows, plus a web version for any device.">
+<link rel="icon" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="FRACTALSCREEN">
+<meta property="og:image" content="logo-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&amp;family=Instrument+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#101233}
+a{color:#F1EEFF}a:hover{color:#FFC27A}
+summary{cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+details[open] .fs-plus{transform:rotate(45deg)}
+@media (max-width:720px){.fs-navlinks{display:none !important}}
+.fs-hero-copy h1,.fs-hero-copy p{text-shadow:0 1px 14px rgba(16,18,51,0.85)}
+@media (max-width:900px){
+.fs-hero{min-height:0 !important}
+.fs-hero-inner{padding-bottom:72px !important}
+.fs-hero-shade{background:linear-gradient(180deg,rgba(16,18,51,0.9) 0%,rgba(16,18,51,0.78) 55%,rgba(16,18,51,0.45) 100%) !important}
+}
+@media (min-width:640px) and (max-width:959px){.fs-pricing>:last-child{grid-column:1/-1}}
+</style>
+<style>html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style>
+<script src="contact.js" defer></script>
+</head>
+<body>
+<div style="background: #101233; color: #F1EEFF; font-family: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 17px; line-height: 1.55; min-height: 100vh">
+
+<header class="fs-hero" style="position: relative; overflow: hidden; min-height: 680px; display: flex; flex-direction: column">
+<canvas id="hero" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #101233"></canvas>
+<div class="fs-hero-shade" aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(16,18,51,0.94) 0%, rgba(16,18,51,0.8) 45%, rgba(16,18,51,0.05) 75%), linear-gradient(0deg, #101233 0%, rgba(16,18,51,0) 30%)"></div>
+
+<nav style="position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1200px; width: 100%; margin: 0 auto; padding: 28px 24px; box-sizing: border-box; flex-wrap: wrap">
+<a href="#top" style="display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: 0.08em; text-decoration: none; color: #F1EEFF"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 40 40" fill="none" style="flex: none; display: block"><defs><linearGradient id="fsLogoGrad" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFC27A"></stop><stop offset="0.55" stop-color="#FF8FB1"></stop><stop offset="1" stop-color="#8C7CFF"></stop></linearGradient></defs><rect x="0.75" y="0.75" width="38.5" height="38.5" rx="10" fill="#1C1F55" stroke="rgba(241,238,255,0.22)" stroke-width="1.5"></rect><g stroke="url(#fsLogoGrad)" stroke-width="1.4" stroke-linejoin="round"><polygon points="32.74,32.74 7.26,32.74 7.26,7.26 32.74,7.26" stroke-opacity="1.00"></polygon><polygon points="28.26,32.25 7.75,28.26 11.74,7.75 32.25,11.74" stroke-opacity="0.94"></polygon><polygon points="24.73,31.15 8.85,24.73 15.27,8.85 31.15,15.27" stroke-opacity="0.88"></polygon><polygon points="22.07,29.72 10.28,22.07 17.93,10.28 29.72,17.93" stroke-opacity="0.82"></polygon><polygon points="20.14,28.14 11.86,20.14 19.86,11.86 28.14,19.86" stroke-opacity="0.76"></polygon><polygon points="18.84,26.58 13.42,18.84 21.16,13.42 26.58,21.16" stroke-opacity="0.70"></polygon><polygon points="18.04,25.11 14.89,18.04 21.96,14.89 25.11,21.96" stroke-opacity="0.64"></polygon><polygon points="17.62,23.81 16.19,17.62 22.38,16.19 23.81,22.38" stroke-opacity="0.58"></polygon><polygon points="17.49,22.69 17.31,17.49 22.51,17.31 22.69,22.51" stroke-opacity="0.52"></polygon></g><circle cx="20" cy="20" r="1.6" fill="#FFC27A"></circle></svg><span>FRACTALSCREEN</span></a>
+<div class="fs-navlinks" style="display: flex; gap: 32px; align-items: center">
+<a href="#fractals" style="text-decoration: none">Fractals</a>
+<a href="#features" style="text-decoration: none">Features</a>
+<a href="#pricing" style="text-decoration: none">Pricing</a>
+<a href="#play" style="text-decoration: none">Ways to play</a>
+<a href="#faq" style="text-decoration: none">FAQ</a>
+</div>
+<a href="#pricing" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 999px; background: #FFC27A; color: #101233; font-weight: 600; text-decoration: none">Try free</a>
+</nav>
+
+<div id="top" class="fs-hero-inner" style="position: relative; flex: 1; display: flex; align-items: center; max-width: 1200px; width: 100%; margin: 0 auto; padding: 40px 24px 120px; box-sizing: border-box">
+<div class="fs-hero-copy" style="max-width: 620px; display: flex; flex-direction: column; gap: 28px">
+<h1 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(42px, 6vw, 76px); line-height: 1.02; letter-spacing: -0.02em">Your idle screen, turned into living mathematics.</h1>
+<p style="margin: 0; font-size: 20px; color: #CFCDEA; max-width: 52ch">Endless, colorful fractal animations with calm focus music. They start when you step away and fade the moment you return.</p>
+<div style="display: flex; gap: 14px; flex-wrap: wrap">
+<a id="fs-hero-cta" href="downloads/FractalScreen-Free-Setup.exe" download style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 28px; border-radius: 999px; background: #FFC27A; color: #101233; font-weight: 600; font-size: 18px; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"></path></svg><span id="fs-hero-cta-label">Download the free trial</span></a>
+<a id="fs-hero-alt" href="app.html" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; font-size: 18px; text-decoration: none">Play in your browser</a>
+</div>
+<p style="margin: 0; color: #B5B3D6; font-size: 15px">Free for 2 weeks, no card needed. Install the Windows app in one click, or play it on any device with the <a href="app.html">Web Player</a>.</p>
+</div>
+</div>
+</header>
+
+<section id="fractals" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 40px; box-sizing: border-box">
+<h2 style="margin: 0 0 12px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Five fractals, each one alive</h2>
+<p style="margin: 0 0 40px; color: #B5B3D6; max-width: 60ch">Every frame is calculated in real time, so the patterns never repeat exactly. Hover over a fractal to watch it move.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 20px">
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+<canvas class="fs-tile" width="320" height="220" role="img" aria-label="Close-up of the Mandelbrot set" style="width: 100%; aspect-ratio: 16 / 11; border-radius: 14px; display: block; background: #181B45"></canvas>
+<figcaption style="display: flex; flex-direction: column; gap: 4px">
+<strong style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 19px">Mandelbrot dive</strong>
+<span style="color: #B5B3D6; font-size: 15px">An endless zoom into the seahorse valley</span>
+</figcaption>
+</figure>
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+<canvas class="fs-tile" width="320" height="220" role="img" aria-label="A Julia set fractal" style="width: 100%; aspect-ratio: 16 / 11; border-radius: 14px; display: block; background: #181B45"></canvas>
+<figcaption style="display: flex; flex-direction: column; gap: 4px">
+<strong style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 19px">Julia drift</strong>
+<span style="color: #B5B3D6; font-size: 15px">A shape that morphs as its seed circles</span>
+</figcaption>
+</figure>
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+<canvas class="fs-tile" width="320" height="220" role="img" aria-label="The burning ship fractal" style="width: 100%; aspect-ratio: 16 / 11; border-radius: 14px; display: block; background: #181B45"></canvas>
+<figcaption style="display: flex; flex-direction: column; gap: 4px">
+<strong style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 19px">Burning ship</strong>
+<span style="color: #B5B3D6; font-size: 15px">The flame-like cousin of the Mandelbrot set</span>
+</figcaption>
+</figure>
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+<canvas class="fs-tile" width="320" height="220" role="img" aria-label="A Newton fractal in three colors" style="width: 100%; aspect-ratio: 16 / 11; border-radius: 14px; display: block; background: #181B45"></canvas>
+<figcaption style="display: flex; flex-direction: column; gap: 4px">
+<strong style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 19px">Newton bloom</strong>
+<span style="color: #B5B3D6; font-size: 15px">Three colored basins, slowly warping</span>
+</figcaption>
+</figure>
+
+<figure style="margin: 0; display: flex; flex-direction: column; gap: 14px">
+<canvas class="fs-tile" width="320" height="220" role="img" aria-label="Six fractal trees branching from a centre" style="width: 100%; aspect-ratio: 16 / 11; border-radius: 14px; display: block; background: #181B45"></canvas>
+<figcaption style="display: flex; flex-direction: column; gap: 4px">
+<strong style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 19px">Fractal tree</strong>
+<span style="color: #B5B3D6; font-size: 15px">Six branching trees swaying together</span>
+</figcaption>
+</figure>
+
+</div>
+</section>
+
+<section id="play" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 0; box-sizing: border-box">
+<h2 style="margin: 0 0 12px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Two ways to play</h2>
+<p style="margin: 0 0 40px; color: #B5B3D6; max-width: 62ch">Install the desktop app for a true screensaver, or open the Web Player on any screen. Both start on their own after a few minutes without activity.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: stretch">
+
+<div style="display: flex; flex-direction: column; gap: 20px; padding: 32px; border-radius: 18px; background: #181B45">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 14px; font-weight: 600; color: #FFC27A">Recommended</span>
+<h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 28px; font-weight: 700">Desktop app</h3>
+<p style="margin: 0; color: #CFCDEA">A real screensaver that lives in your system settings. It starts whenever your computer is idle, even with every window closed.</p>
+</div>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
+<li>Installs in one click, no admin password</li>
+<li>Starts on its own, like any built-in screensaver</li>
+<li>Smooth at 4K and across multiple monitors</li>
+</ul>
+<div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<a href="downloads/FractalScreen-Free-Setup.exe" download style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: #FFC27A; color: #101233; font-weight: 600; font-size: 17px; text-decoration: none; white-space: nowrap"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"></path></svg>Download for Windows</a>
+<span style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px dashed #B5B3D6; color: #B5B3D6; font-size: 15px">macOS: coming soon</span>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 20px; padding: 32px; border-radius: 18px; border: 1px solid rgba(241,238,255,0.18)">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 14px; font-weight: 600; color: #B5B3D6">Nothing to install</span>
+<h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 28px; font-weight: 700">Web Player</h3>
+<p style="margin: 0; color: #CFCDEA">Open it in your browser on a Mac, PC, tablet or smart TV. Leave it on screen, and when nobody has touched the mouse or keyboard for a few minutes, the fractals fill the screen.</p>
+</div>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
+<li>You choose when it starts, from 1 to 15 minutes</li>
+<li>Keeps the screen on while the fractals play</li>
+<li>Can be installed as an app from Chrome or Edge</li>
+</ul>
+<div style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+<a href="app.html" style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 24px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; font-size: 17px; text-decoration: none; white-space: nowrap"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 16 16" fill="currentColor" style="flex: none"><path d="M4.5 2.8v10.4a.6.6 0 0 0 .9.5l8.2-5.2a.6.6 0 0 0 0-1L5.4 2.3a.6.6 0 0 0-.9.5z"></path></svg>Open the Web Player</a>
+</div>
+</div>
+
+</div>
+<p style="margin: 24px 0 0; color: #B5B3D6; font-size: 15px; max-width: 70ch">The Web Player needs its page open. It’s perfect for a Mac until the Mac app arrives, or for a screen in a café or lobby.</p>
+</section>
+
+<section id="features" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 64px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 16px; position: sticky; top: 24px">
+<h2 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Built for the moments you step away</h2>
+<p style="margin: 0; color: #B5B3D6; max-width: 46ch">A screensaver should be calm, beautiful and invisible when you need your screen back. That’s the whole idea.</p>
+</div>
+<div style="display: flex; flex-direction: column">
+<div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Focus music that never loops</h3>
+<p style="margin: 0; color: #CFCDEA">Original ambient electronic music, composed live as it plays. Soft pads, a gentle pulse and nothing that grabs your attention.</p>
+</div>
+<div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Your colors, your pace</h3>
+<p style="margin: 0; color: #CFCDEA">Choose a color scheme or make your own, set the animation speed, and let it cycle through every fractal or stay on a favourite.</p>
+</div>
+<div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Sharp on any screen</h3>
+<p style="margin: 0; color: #CFCDEA">Rendered on your graphics card, so it stays smooth at 4K and across multiple monitors.</p>
+</div>
+<div style="padding: 28px 0; border-top: 1px solid rgba(241,238,255,0.16); border-bottom: 1px solid rgba(241,238,255,0.16); display: flex; flex-direction: column; gap: 8px">
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">For lobbies, cafés and waiting rooms</h3>
+<p style="margin: 0; color: #CFCDEA">The Business plan licenses FRACTALSCREEN for screens in public spaces, with music included.</p>
+</div>
+</div>
+</section>
+
+<section style="background: #181B45">
+<div style="max-width: 1200px; margin: 0 auto; padding: 72px 24px; box-sizing: border-box">
+<h2 style="margin: 0 0 32px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: 30px">One subscription, every device</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px"><strong style="font-size: 18px">Windows</strong><span style="color: #B5B3D6; font-size: 15px">A real screensaver, set up in one click</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><strong style="font-size: 18px">macOS</strong><span style="color: #B5B3D6; font-size: 15px">Coming soon. Until then, use the Web Player</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><strong style="font-size: 18px">Android</strong><span style="color: #B5B3D6; font-size: 15px">Coming soon: screen saver while charging, plus live wallpaper</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><strong style="font-size: 18px">iPhone and iPad</strong><span style="color: #B5B3D6; font-size: 15px">Coming soon: an ambient display app for your desk or bedside</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><strong style="font-size: 18px">Web Player</strong><span style="color: #B5B3D6; font-size: 15px">Any modern browser, on any device, nothing to install</span></div>
+</div>
+</div>
+</section>
+
+<section id="install" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px 0; box-sizing: border-box">
+<h2 style="margin: 0 0 12px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Installed in one click</h2>
+<p style="margin: 0 0 40px; color: #B5B3D6; max-width: 60ch">No settings to dig through. The installer switches FRACTALSCREEN on for you, and you can change fractals and colors anytime from the Start menu.</p>
+<ol style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px">
+<li style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; color: #FFC27A">1</span>
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Download</h3>
+<p style="margin: 0; color: #CFCDEA">Click the download button. The installer is a small file, under 1 MB.</p>
+</li>
+<li style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; color: #FFC27A">2</span>
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Open it</h3>
+<p style="margin: 0; color: #CFCDEA">Open the file from your downloads. It installs in seconds, with no questions and no admin password.</p>
+</li>
+<li style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; font-size: 44px; line-height: 1; color: #FFC27A">3</span>
+<h3 style="margin: 0; font-size: 21px; font-weight: 600">Done</h3>
+<p style="margin: 0; color: #CFCDEA">FRACTALSCREEN is now your screensaver. Preview it right away, or just step away from your computer.</p>
+</li>
+</ol>
+</section>
+
+<section id="pricing" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; box-sizing: border-box">
+<h2 style="margin: 0 0 12px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Simple pricing</h2>
+<p style="margin: 0 0 44px; color: #B5B3D6">Try it free for 2 weeks. Premium keeps it running for as long as you’re subscribed. Cancel anytime.</p>
+<div class="fs-pricing" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: stretch">
+
+<div style="display: flex; flex-direction: column; gap: 22px; padding: 32px; border-radius: 18px; border: 1px solid rgba(241,238,255,0.18)">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 24px; font-weight: 700">Free trial</h3>
+<p style="margin: 0; color: #B5B3D6">2 weeks, no card needed</p>
+</div>
+<p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$0 <span style="font-size: 17px; color: #B5B3D6; font-weight: 400">for 14 days</span></p>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
+<li>3 fractals for 2 weeks</li>
+<li>2 color schemes</li>
+<li>Windows app and Web Player</li>
+<li>HD resolution</li>
+</ul>
+<a href="downloads/FractalScreen-Free-Setup.exe" download style="margin-top: auto; display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; text-decoration: none">Download free trial</a>
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px solid rgba(241,238,255,0.16)">
+<span style="font-size: 14px; font-weight: 600; color: #B5B3D6">Download the free trial</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="downloads/FractalScreen-Free-Setup.exe" download style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(241,238,255,0.08); color: #F1EEFF"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"></path></svg>Windows</a>
+<a href="app.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(241,238,255,0.08); color: #F1EEFF"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M2.5 13.5h11"></path></svg>Web Player</a>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #B5B3D6; color: #B5B3D6">macOS: coming soon</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #B5B3D6; color: #B5B3D6">Android: coming soon</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 22px; padding: 32px; border-radius: 18px; background: #F1EEFF; color: #101233">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 24px; font-weight: 700">Premium</h3>
+<p style="margin: 0; color: #43456E">For your own devices</p>
+</div>
+<p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$4.99 <span style="font-size: 17px; color: #43456E; font-weight: 400">per month, or $34.99 per year</span></p>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #2A2C55">
+<li>Keeps running for as long as your plan is paid</li>
+<li>All fractals, plus a new one every month</li>
+<li>All color schemes and custom colors</li>
+<li>Focus music (Web Player now, Windows soon)</li>
+<li>4K and multiple monitors</li>
+<li>Windows app and Web Player, with Mac, Android and iPhone as they launch</li>
+</ul>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+<a href="#pricing" data-checkout="premium-yearly" style="display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border-radius: 999px; background: #101233; color: #F1EEFF; font-weight: 600; text-decoration: none">Get Premium yearly, $34.99</a>
+<a href="#pricing" data-checkout="premium-monthly" style="display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border-radius: 999px; border: 1.5px solid rgba(16,18,51,0.35); color: #101233; font-weight: 600; text-decoration: none">Or monthly, $4.99</a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px solid rgba(16,18,51,0.14)">
+<span style="font-size: 14px; font-weight: 600; color: #43456E">Included downloads</span>
+<span style="font-size: 14px; color: #43456E">Your download starts automatically after checkout.</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(16,18,51,0.07); color: #101233"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M3 8.5l3.2 3L13 4.5"></path></svg>Windows</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(16,18,51,0.07); color: #101233"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M3 8.5l3.2 3L13 4.5"></path></svg>Web Player</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #43456E; color: #43456E">macOS: coming soon</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #43456E; color: #43456E">Android: coming soon</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #43456E; color: #43456E">iPhone and iPad: coming soon</span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 22px; padding: 32px; border-radius: 18px; border: 1px solid rgba(241,238,255,0.18)">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-family: 'Syne', 'Instrument Sans', sans-serif; font-size: 24px; font-weight: 700">Business</h3>
+<p style="margin: 0; color: #B5B3D6">For screens in public spaces</p>
+</div>
+<p style="margin: 0; font-size: 40px; font-weight: 600; line-height: 1">$6 <span style="font-size: 17px; color: #B5B3D6; font-weight: 400">per screen, per month, or $60 per year</span></p>
+<ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #CFCDEA">
+<li>Everything in Premium</li>
+<li>License for lobbies, cafés, offices and waiting rooms</li>
+<li>Your logo shown between fractals</li>
+<li>Invoices for your company</li>
+</ul>
+<a href="#pricing" data-checkout="business" style="margin-top: auto; display: inline-flex; justify-content: center; align-items: center; min-height: 48px; border-radius: 999px; border: 1.5px solid rgba(241,238,255,0.45); color: #F1EEFF; font-weight: 600; text-decoration: none">Get Business</a>
+<a href="mailto:contact@fractalscreen.com?subject=Business%20plan" data-contact="Business plan" style="text-align: center; font-size: 15px; color: #CFCDEA">Yearly billing or 10+ screens? Contact sales</a>
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px solid rgba(241,238,255,0.16)">
+<span style="font-size: 14px; font-weight: 600; color: #B5B3D6">Included downloads</span>
+<span style="font-size: 14px; color: #B5B3D6">Your download starts automatically after checkout.</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(241,238,255,0.08); color: #F1EEFF"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M3 8.5l3.2 3L13 4.5"></path></svg>Windows</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; background: rgba(241,238,255,0.08); color: #F1EEFF"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><path d="M3 8.5l3.2 3L13 4.5"></path></svg>Web Player</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #B5B3D6; color: #B5B3D6">macOS: coming soon</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 10px; font-size: 15px; font-weight: 500; text-decoration: none; border: 1px dashed #B5B3D6; color: #B5B3D6">Android: coming soon</span>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+
+<section id="faq" style="max-width: 820px; margin: 0 auto; padding: 40px 24px 112px; box-sizing: border-box">
+<h2 style="margin: 0 0 28px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.1">Questions</h2>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Does it work on iPhone and iPad?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Apple doesn’t allow apps to replace the iPhone or iPad screensaver, so FRACTALSCREEN will run there as an ambient display app. Open it on a stand or bedside and it plays fractals and music with a sleep timer.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Windows says it protected my PC. Is the installer safe?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Windows shows this message for new apps it hasn’t seen many times yet. Click More info, then Run anyway. The installer only copies the screensaver into your user folder and switches it on.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">How do I uninstall it?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Open Settings, then Apps, find FRACTALSCREEN and choose Uninstall. Your previous screensaver setting is cleared.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Should I use the desktop app or the Web Player?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Use the desktop app on Windows: it’s a real screensaver and starts by itself whenever your computer is idle. The Web Player works on any device without installing anything, but it only starts while its page is open, so keep it in a browser window or install it as an app.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">What happens after the 2-week free trial?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">The fractals stop and FRACTALSCREEN shows a short reminder instead. Get Premium and they come straight back, with all five fractals and every color scheme.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Where do I find my license key?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Right after checkout, your download page shows your key and copies it for you, and the Windows installer fills it in. You can also enter it later in FRACTALSCREEN settings from the Start menu.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Can I cancel anytime?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Yes. Premium keeps running until the end of the period you’ve paid for, then stops. Renew anytime to bring it back.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Where does the music come from?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">It’s original music generated live by FRACTALSCREEN, so it never loops and is safe to play in shops and offices on the Business plan.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Will it slow down my computer?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">It only runs while your screen is idle and stops the moment you move the mouse or press a key.</p>
+</details>
+
+<details style="border-top: 1px solid rgba(241,238,255,0.16); padding: 6px 0">
+<summary style="display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; font-size: 19px; font-weight: 600">Can I use it on screens in my business?<svg class="fs-plus" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex: none; transition: transform 0.2s"><path d="M10 3v14M3 10h14"></path></svg></summary>
+<p style="margin: 0 0 20px; color: #CFCDEA; max-width: 66ch">Personal plans are for your own devices. For lobbies, cafés, offices or waiting rooms, choose the Business plan.</p>
+</details>
+
+</section>
+
+<footer style="border-top: 1px solid rgba(241,238,255,0.16)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 36px 24px 48px; box-sizing: border-box; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; color: #B5B3D6; font-size: 15px">
+<a href="#top" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: 'Syne', 'Instrument Sans', sans-serif; font-weight: 800; letter-spacing: 0.08em; color: #F1EEFF; text-decoration: none"><svg aria-hidden="true" width="32" height="32" viewBox="0 0 40 40" fill="none" style="flex: none; display: block"><defs><linearGradient id="fsLogoGradFoot" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFC27A"></stop><stop offset="0.55" stop-color="#FF8FB1"></stop><stop offset="1" stop-color="#8C7CFF"></stop></linearGradient></defs><rect x="0.75" y="0.75" width="38.5" height="38.5" rx="10" fill="#1C1F55" stroke="rgba(241,238,255,0.22)" stroke-width="1.5"></rect><g stroke="url(#fsLogoGradFoot)" stroke-width="1.4" stroke-linejoin="round"><polygon points="32.74,32.74 7.26,32.74 7.26,7.26 32.74,7.26" stroke-opacity="1.00"></polygon><polygon points="28.26,32.25 7.75,28.26 11.74,7.75 32.25,11.74" stroke-opacity="0.94"></polygon><polygon points="24.73,31.15 8.85,24.73 15.27,8.85 31.15,15.27" stroke-opacity="0.88"></polygon><polygon points="22.07,29.72 10.28,22.07 17.93,10.28 29.72,17.93" stroke-opacity="0.82"></polygon><polygon points="20.14,28.14 11.86,20.14 19.86,11.86 28.14,19.86" stroke-opacity="0.76"></polygon><polygon points="18.84,26.58 13.42,18.84 21.16,13.42 26.58,21.16" stroke-opacity="0.70"></polygon><polygon points="18.04,25.11 14.89,18.04 21.96,14.89 25.11,21.96" stroke-opacity="0.64"></polygon><polygon points="17.62,23.81 16.19,17.62 22.38,16.19 23.81,22.38" stroke-opacity="0.58"></polygon><polygon points="17.49,22.69 17.31,17.49 22.51,17.31 22.69,22.51" stroke-opacity="0.52"></polygon></g><circle cx="20" cy="20" r="1.6" fill="#FFC27A"></circle></svg><span>FRACTALSCREEN</span></a>
+<div style="display: flex; gap: 24px; flex-wrap: wrap">
+<a href="#top">Terms</a>
+<a href="#top">Privacy</a>
+<a href="mailto:contact@fractalscreen.com" data-contact="">Contact</a>
+</div>
+<span>© 2026 FRACTALSCREEN. Payments by Stripe.</span>
+</div>
+</footer>
+
+</div>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>class DCLogic{constructor(p){this.props=p||{};}}
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.tileEls = [];
+    this.hero = null;
+    this.raf = 0;
+  }
+  componentDidMount(){
+    var self = this;
+    this.mounted = true;
+    this.ensure();
+    // The gallery can render a moment after mount, so check again shortly after
+    this.t1 = setTimeout(function(){ self.ensure(); }, 400);
+    this.t2 = setTimeout(function(){ self.ensure(); }, 1500);
+  }
+  componentDidUpdate(){
+    this.ensure();
+  }
+  ensure(){
+    this.startHero();
+    this.drawTiles();
+  }
+  componentWillUnmount(){
+    this.mounted = false;
+    clearTimeout(this.t1); clearTimeout(this.t2);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.ro) this.ro.disconnect();
+  }
+  pal(t, d){
+    var r = [];
+    for (var i = 0; i < 3; i++) r.push(Math.max(0, Math.min(1, 0.5 + 0.5 * Math.cos(6.28318 * (t + d[i])))));
+    return r;
+  }
+  startHero(){
+    var cv = this.hero;
+    if (!cv || cv === this.heroOn) return;   // already running on this canvas
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.heroOn = cv;
+    var gl = cv.getContext('webgl', { antialias: false }) || cv.getContext('experimental-webgl');
+    if (!gl) return;
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    var fs = 'precision highp float;uniform vec2 r;uniform float t;' +
+      'vec3 pal(float x){return clamp(.5+.5*cos(6.28318*(x+vec3(.0,.12,.28))),0.,1.);}' +
+      'void main(){bool wide=r.x>r.y*1.3;vec2 ctr=wide?vec2(.76*r.x,.5*r.y):vec2(.5*r.x,.22*r.y);' +
+      'vec2 uv=(gl_FragCoord.xy-ctr)/min(r.x,r.y);' +
+      'float a=t*.02;uv=mat2(cos(a),-sin(a),sin(a),cos(a))*uv*(wide?3.0:2.6);' +
+      'vec2 c=.7885*vec2(cos(t*.09+1.2),sin(t*.09+1.2));vec2 z=uv;float n=0.;bool e=false;' +
+      'for(int i=0;i<220;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){e=true;break;}n+=1.;}' +
+      'vec3 col=vec3(.063,.071,.2);' +
+      'if(e){float s=n-log2(log2(dot(z,z)))+4.;col=mix(col,pal(.03*s+t*.03),smoothstep(0.,6.,s));}' +
+      'gl_FragColor=vec4(col,1.);}';
+    function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+    var pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+    gl.useProgram(pr);
+    var b = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, b);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    var uR = gl.getUniformLocation(pr, 'r'), uT = gl.getUniformLocation(pr, 't');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var self = this, t0 = performance.now(), offset = 8;
+    function frame(now){
+      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var w = Math.max(1, Math.round(cv.clientWidth * dpr)), h = Math.max(1, Math.round(cv.clientHeight * dpr));
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(uR, w, h);
+      gl.uniform1f(uT, offset + (reduce ? 0 : (now - t0) / 1000));
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (!reduce) self.raf = requestAnimationFrame(frame);
+    }
+    this.raf = requestAnimationFrame(frame);
+  }
+  tileSpecs(){
+    return [
+      { kind: 'mandel', d: [0.0, 0.33, 0.67] },
+      { kind: 'julia', d: [0.0, 0.12, 0.28] },
+      { kind: 'ship', d: [0.8, 0.9, 0.3] },
+      { kind: 'newton', d: [0.0, 0.15, 0.2] },
+      { kind: 'tree', d: [0.5, 0.2, 0.25] }
+    ];
+  }
+  drawTiles(){
+    var self = this, specs = this.tileSpecs();
+    specs.forEach(function(s, i){
+      var cv = self.tileEls[i];
+      if (!cv || !cv.isConnected || cv.getAttribute('data-fs-drawn') === '1') return;
+      var ctx = cv.getContext('2d');
+      if (!ctx) return;
+      cv.setAttribute('data-fs-drawn', '1');
+      self.renderTile(ctx, s, cv.width, cv.height, 0, 1);
+      self.attachHover(cv, s);
+    });
+  }
+  // Hover (or tap) a thumbnail: animate it at half resolution, then redraw sharp when the pointer leaves
+  attachHover(cv, s){
+    var self = this, host = cv.parentNode || cv;
+    if (host.getAttribute('data-fs-hover') === '1') return;
+    host.setAttribute('data-fs-hover', '1');
+    host.style.cursor = 'pointer';
+    var st = { raf: 0, t: 0, last: 0 };
+    var off = document.createElement('canvas');
+    off.width = Math.round(cv.width / 2); off.height = Math.round(cv.height / 2);
+    var octx = off.getContext('2d'), ctx = cv.getContext('2d');
+    function frame(now){
+      var dt = st.last ? Math.min(0.1, (now - st.last) / 1000) : 0;
+      st.last = now; st.t += dt;
+      self.renderTile(octx, s, off.width, off.height, st.t, 0.6);
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(off, 0, 0, cv.width, cv.height);
+      st.raf = requestAnimationFrame(frame);
+    }
+    function start(){ if (st.raf) return; st.last = 0; st.raf = requestAnimationFrame(frame); }
+    function stop(){
+      if (!st.raf) return;
+      cancelAnimationFrame(st.raf); st.raf = 0;
+      self.renderTile(ctx, s, cv.width, cv.height, st.t, 1);   // leave a sharp frame where it stopped
+    }
+    host.addEventListener('mouseenter', start);
+    host.addEventListener('mouseleave', stop);
+    host.addEventListener('touchstart', function(){ if (st.raf) stop(); else start(); }, { passive: true });
+  }
+  // Draws one tile at animation time t (t = 0 is the still thumbnail). q < 1 lowers iterations for speed.
+  renderTile(ctx, s, W, H, t, q){
+    if (s.kind === 'tree') { this.drawTree(ctx, W, H, s.d, t); return; }
+    var img = ctx.createImageData(W, H), px = img.data, self = this;
+    var cx, cy, span, jx = 0, jy = 0, rot = 0, relax = 1, shift = t * 0.06;
+    if (s.kind === 'mandel') { cx = -0.743643887; cy = 0.131825904; span = 0.012 * Math.pow(0.08, 0.5 - 0.5 * Math.cos(t * 0.45)); rot = t * 0.15; }
+    else if (s.kind === 'julia') { cx = 0; cy = 0; span = 3.0; var a = 2.95 + t * 0.35; jx = 0.7885 * Math.cos(a); jy = 0.7885 * Math.sin(a); rot = t * 0.08; }
+    else if (s.kind === 'ship') { cx = -1.7615; cy = -0.028; span = 0.09 * Math.pow(0.25, 0.5 - 0.5 * Math.cos(t * 0.4)); }
+    else { cx = 0; cy = 0; span = 3.0 * (1 - 0.25 * Math.sin(t * 0.5)); rot = t * 0.2; relax = 1 + 0.45 * Math.sin(t * 0.7); }
+    var scale = span / W, ca = Math.cos(rot), sa = Math.sin(rot);
+    var MAX = Math.round((s.kind === 'mandel' ? 400 : 160) * q), NMAX = Math.round(40 * Math.max(q, 0.75));
+    for (var y = 0; y < H; y++) {
+      for (var x = 0; x < W; x++) {
+        var rx = (x - W / 2) * scale, ry = (y - H / 2) * scale;
+        var ux = cx + ca * rx - sa * ry, uy = cy + sa * rx + ca * ry;
+        var col = [0.063, 0.071, 0.2];
+        if (s.kind === 'newton') {
+          var zx = ux, zy = uy, n = 0;
+          for (; n < NMAX; n++) {
+            var x2 = zx * zx - zy * zy, y2 = 2 * zx * zy;
+            var fx = x2 * zx - y2 * zy - 1, fy = x2 * zy + y2 * zx;
+            if (fx * fx + fy * fy < 1e-6) break;
+            var dx = 3 * x2, dy = 3 * y2, dd = dx * dx + dy * dy || 1e-9;
+            zx -= relax * (fx * dx + fy * dy) / dd; zy -= relax * (fy * dx - fx * dy) / dd;
+          }
+          var ang = Math.atan2(zy, zx), root = Math.floor(((ang / 2.0944 + 0.5) % 3 + 3) % 3);
+          var shade = Math.pow(1 - n / NMAX, 2.2), c = self.pal(root / 3 + n * 0.025 + shift, s.d), f = 0.25 + 0.85 * shade;
+          col = [c[0] * f, c[1] * f, c[2] * f];
+        } else {
+          var zx2, zy2, qx, qy, k = 0, esc = false;
+          if (s.kind === 'julia') { zx2 = ux; zy2 = uy; qx = jx; qy = jy; }
+          else { zx2 = 0; zy2 = 0; qx = ux; qy = uy; }
+          for (; k < MAX; k++) {
+            if (s.kind === 'ship') { zx2 = Math.abs(zx2); zy2 = Math.abs(zy2); }
+            var nx = zx2 * zx2 - zy2 * zy2 + qx; zy2 = 2 * zx2 * zy2 + qy; zx2 = nx;
+            if (zx2 * zx2 + zy2 * zy2 > 256) { esc = true; break; }
+          }
+          if (esc) col = self.pal(0.03 * (k - Math.log2(Math.log2(zx2 * zx2 + zy2 * zy2)) + 4) + shift, s.d);
+        }
+        var o = (y * W + x) * 4;
+        px[o] = col[0] * 255; px[o + 1] = col[1] * 255; px[o + 2] = col[2] * 255; px[o + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  drawTree(ctx, W, H, d, t){
+    t = t || 0;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#101233';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    var D = 9, base = Math.min(W, H) * 0.14, level = [], len = base;
+    for (var k = 0; k < 6; k++) level.push({ x: W / 2, y: H / 2, a: k * Math.PI / 3 + 0.3 + t * 0.15 });
+    for (var dep = 0; dep < D; dep++) {
+      var spread = 0.32 + 0.22 * Math.sin(1.7 + t * 0.9 + dep * 0.45), twist = 0.12 * Math.sin(t * 0.6 + dep * 0.8), next = [];
+      if (!t) twist = 0;
+      ctx.beginPath();
+      for (var i = 0; i < level.length; i++) {
+        var s = level[i], ex = s.x + Math.cos(s.a) * len, ey = s.y + Math.sin(s.a) * len;
+        ctx.moveTo(s.x, s.y); ctx.lineTo(ex, ey);
+        if (dep < D - 1) next.push({ x: ex, y: ey, a: s.a - spread + twist }, { x: ex, y: ey, a: s.a + spread + twist });
+      }
+      var c = this.pal(dep / D * 0.9 + t * 0.06, d);
+      ctx.strokeStyle = 'rgba(' + Math.round(c[0] * 255) + ',' + Math.round(c[1] * 255) + ',' + Math.round(c[2] * 255) + ',' + (0.55 + 0.45 * (1 - dep / D)) + ')';
+      ctx.lineWidth = Math.max(0.6, (D - dep) * base / 90);
+      ctx.stroke();
+      level = next; len *= 0.74;
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+}
+
+var fsPage=new Component({});
+fsPage.hero=document.getElementById('hero');
+fsPage.tileEls=Array.prototype.slice.call(document.querySelectorAll('.fs-tile'));
+fsPage.mounted=true;
+fsPage.componentDidMount();
+</script>
+<script>
+/* ===== FRACTALSCREEN site settings: fill these in after setting up Paddle ===== */
+var FS_CONFIG = {
+  paddleToken: "PADDLE_CLIENT_TOKEN",     // Paddle > Developer tools > Authentication > client-side token
+  paddleSandbox: false,                   // true while testing with a Paddle sandbox account
+  prices: {
+    "premium-yearly":  "PRICE_ID_PREMIUM_YEARLY",   // $34.99 / year
+    "premium-monthly": "PRICE_ID_PREMIUM_MONTHLY",  // $4.99 / month
+    "business":        "PRICE_ID_BUSINESS_MONTHLY"  // $6 / screen / month
+  }
+};
+/* ============================================================================ */
+(function () {
+  var ua = navigator.userAgent;
+  var isWindows = /Windows NT/i.test(ua);
+
+  // Free downloads go through the download page, which starts the file and shows the 3 install steps
+  var freeLinks = document.querySelectorAll('a[href$="FractalScreen-Free-Setup.exe"]');
+  for (var i = 0; i < freeLinks.length; i++) { freeLinks[i].href = "download.html?plan=free"; freeLinks[i].removeAttribute("download"); }
+
+  // Hero button: Windows gets the installer, everyone else gets the web version
+  var cta = document.getElementById("fs-hero-cta"), label = document.getElementById("fs-hero-cta-label");
+  // Mac, phones, tablets: the Web Player is the main option, the Windows download becomes the second button
+  var alt = document.getElementById("fs-hero-alt");
+  if (cta && !isWindows) {
+    cta.href = "app.html"; cta.removeAttribute("download");
+    if (label) label.textContent = "Open the Web Player";
+    var svg = cta.querySelector("svg"); if (svg) svg.style.display = "none";
+    if (alt) { alt.href = "download.html?plan=free"; alt.textContent = "Download for Windows"; }
+  }
+
+  var paddleReady = false, checkoutPlan = "premium";
+  try {
+    if (window.Paddle && FS_CONFIG.paddleToken.indexOf("PADDLE_") !== 0) {
+      if (FS_CONFIG.paddleSandbox) Paddle.Environment.set("sandbox");
+      Paddle.Initialize({
+        token: FS_CONFIG.paddleToken,
+        eventCallback: function (ev) {
+          // After payment, go to the download page with this purchase's transaction, which fetches the license key
+          if (ev && ev.name === "checkout.completed" && ev.data && ev.data.transaction_id) {
+            location.href = "download.html?plan=" + checkoutPlan + "&txn=" + encodeURIComponent(ev.data.transaction_id);
+          }
+        }
+      });
+      paddleReady = true;
+    }
+  } catch (e) { paddleReady = false; }
+
+  var buttons = document.querySelectorAll("[data-checkout]");
+  for (var j = 0; j < buttons.length; j++) {
+    buttons[j].addEventListener("click", function (e) {
+      e.preventDefault();
+      var plan = this.getAttribute("data-checkout");
+      var price = FS_CONFIG.prices[plan];
+      var group = plan.indexOf("business") === 0 ? "business" : "premium";
+      if (!paddleReady || !/^pri_[a-z0-9]+$/.test(price || "")) {
+        alert("Checkout isn’t switched on yet. Add your Paddle token and price IDs at the top of the site script.");
+        return;
+      }
+      checkoutPlan = group;
+      Paddle.Checkout.open({ items: [{ priceId: price, quantity: 1 }] });
+    });
+  }
+})();
+
+</script>
+</body>
+</html>

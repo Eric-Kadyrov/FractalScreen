@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtm.js?id=G-26B6J0MX81"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FRACTALSCREEN Web Player</title>
+<link rel="icon" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest-free.webmanifest">
+<meta name="theme-color" content="#101233">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E7EAF1; --surface:#FFFFFF; --ink:#1B2233; --muted:#5A6378; --line:#D3D8E3;
+  --accent:#4B3FD1; --accent-ink:#FFFFFF; --bezel:#2A3042;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12151D; --surface:#1B2030; --ink:#E6E9F2; --muted:#9AA3B8; --line:#2C3346;
+    --accent:#9A90FF; --accent-ink:#12151D; --bezel:#0A0C12; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12151D; --surface:#1B2030; --ink:#E6E9F2; --muted:#9AA3B8; --line:#2C3346;
+  --accent:#9A90FF; --accent-ink:#12151D; --bezel:#0A0C12; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 64px}
+header h1{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;font-weight:700;
+  font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;letter-spacing:-.02em;margin:0 0 10px}
+header p{margin:0;color:var(--muted);max-width:60ch}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;margin-top:36px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+
+/* Monitor */
+.monitor{margin:0}
+.screen-frame{background:var(--bezel);border-radius:18px 18px 10px 10px;padding:14px 14px 26px;position:relative;
+  box-shadow:0 18px 40px -18px rgba(20,24,40,.55)}
+.screen-frame::after{content:"";position:absolute;bottom:9px;left:50%;width:8px;height:8px;margin-left:-4px;border-radius:50%;
+  background:#6CF0B0;box-shadow:0 0 8px #6CF0B0}
+.screen{aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:#000;position:relative}
+.stand{width:22%;height:34px;margin:0 auto;background:linear-gradient(var(--bezel),color-mix(in srgb,var(--bezel) 80%,#888));
+  clip-path:polygon(25% 0,75% 0,90% 100%,10% 100%)}
+.base{width:40%;height:10px;margin:0 auto;border-radius:6px;background:var(--bezel)}
+.monitor figcaption{margin-top:16px;color:var(--muted);font-size:.9rem;text-align:center}
+.preview-row{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+
+.btn{font:inherit;font-weight:600;border:0;border-radius:999px;padding:12px 22px;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn:hover{filter:brightness(1.08)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* Settings */
+.settings{background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--line)}
+fieldset{border:0;margin:0 0 24px;padding:0}
+legend,.label{font-family:"Bricolage Grotesque","Instrument Sans",sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:10px;padding:0}
+.choices{display:grid;gap:6px}
+.choice{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:10px;cursor:pointer;border:1.5px solid transparent}
+.choice:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.choice:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.choice input{margin-top:5px;accent-color:var(--accent)}
+.choice strong{display:block;font-weight:600}
+.choice span{color:var(--muted);font-size:.9rem}
+.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.swatch{display:flex;flex-direction:column;gap:6px;cursor:pointer;font-size:.85rem;color:var(--muted)}
+.swatch input{position:absolute;opacity:0;pointer-events:none}
+.swatch i{display:block;height:34px;border-radius:8px;border:2px solid transparent;outline:2px solid transparent}
+.swatch:has(input:checked) i{border-color:var(--surface);outline-color:var(--accent)}
+.swatch:has(input:checked){color:var(--ink);font-weight:600}
+.swatch:has(input:focus-visible) i{outline:3px solid var(--accent)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+input[type=range]{width:55%;accent-color:var(--accent)}
+select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;cursor:pointer}
+.toggle input{appearance:none;width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.toggle input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle input:checked{background:var(--accent)}
+.toggle input:checked::after{transform:translateX(18px)}
+.status{margin:6px 0 0;padding:12px 14px;border-radius:10px;background:var(--bg);color:var(--muted);font-size:.9rem}
+.note{color:var(--muted);font-size:.85rem;margin-top:28px;max-width:70ch}
+
+/* Saver overlay */
+#saver{position:fixed;inset:0;z-index:1000;background:#000;display:none;cursor:none}
+#saver.on{display:block}
+#saver .host{position:absolute;inset:0}
+#saver .fade{position:absolute;inset:0;background:#000;opacity:0;transition:opacity .8s;pointer-events:none}
+#saver .fade.dark{opacity:1}
+#saver .hint{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  color:#fff;background:rgba(0,0,0,.45);padding:8px 16px;border-radius:999px;font-size:.9rem;transition:opacity 1s;white-space:nowrap}
+#saver .name{position:absolute;left:24px;top:calc(20px + env(safe-area-inset-top,0px));color:rgba(255,255,255,.7);
+  font-family:"Bricolage Grotesque",sans-serif;font-size:1rem;transition:opacity 1s}
+.host canvas,.screen canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+#lockOverlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;padding:24px;background:#101233;color:#F1EEFF;z-index:2}
+#lockOverlay h2{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;margin:0;font-size:clamp(1.1rem,2.6vw,1.5rem);color:#FFC27A}
+#lockOverlay p{margin:0;color:#CFCDEA;max-width:42ch}
+.lock-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.lock-actions input{font:inherit;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid #4A4F8C;background:#181B45;color:#F1EEFF;min-width:min(260px,60vw)}
+a.btn{display:inline-flex;align-items:center;text-decoration:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#licenseInfo a,.note a{color:var(--accent);font-weight:600}
+.tag{display:inline-block;vertical-align:middle;margin-left:10px;padding:4px 12px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-family:"Instrument Sans",system-ui,sans-serif;font-size:.9rem;font-weight:600;letter-spacing:0}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.head-actions[hidden]{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><a href="index.html" style="color:inherit;text-decoration:none">FRACTALSCREEN Web Player</a><span class="tag">Free trial</span></h1>
+    <p>Leave the Web Player open on your screen. When nobody has touched the mouse, keyboard or screen for a few minutes, it fills the screen with fractals. Move the mouse or press a key to come back.</p>
+    <div class="head-actions" id="installBox" hidden><button class="btn" id="installBtn" type="button">Install the Web Player</button></div>
+    <p class="status" id="licenseInfo" aria-live="polite" style="margin-top:16px"></p>
+  </header>
+
+  <div class="layout">
+    <figure class="monitor">
+      <div class="screen-frame"><div class="screen" id="previewHost"></div></div>
+      <div class="stand"></div><div class="base"></div>
+      <figcaption id="previewCaption">Live preview</figcaption>
+      <div class="preview-row">
+        <button class="btn" id="previewBtn">Preview full screen</button>
+        <button class="btn ghost" id="nextBtn">Try next fractal</button>
+      </div>
+    </figure>
+
+    <form class="settings" id="settings" onsubmit="return false">
+      <fieldset>
+        <legend>Fractal</legend>
+        <div class="choices" id="fractalChoices"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Colors</legend>
+        <div class="swatches" id="paletteChoices"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Behaviour</legend>
+        <div class="row"><label for="speed">Animation speed</label><input type="range" id="speed" min="0.25" max="3" step="0.25" value="1"></div>
+        <div class="row"><label for="wait">Start after</label>
+          <select id="wait">
+            <option value="30">30 seconds</option>
+            <option value="60">1 minute</option>
+            <option value="120">2 minutes</option>
+            <option value="180" selected>3 minutes</option>
+            <option value="300">5 minutes</option>
+            <option value="600">10 minutes</option>
+            <option value="900">15 minutes</option>
+          </select>
+        </div>
+        <label class="toggle"><span>Cycle through all fractals</span><input type="checkbox" id="cycle"></label>
+        <label class="toggle"><span>Keep the screen on while fractals play</span><input type="checkbox" id="wakelock" checked></label>
+        <label class="toggle"><span>Screensaver on</span><input type="checkbox" id="enabled" checked></label>
+        <p class="status" id="status" aria-live="polite"></p>
+      </fieldset>
+      <fieldset>
+        <legend>Music</legend>
+        <label class="toggle"><span>Play focus music with the screensaver</span><input type="checkbox" id="music" checked></label>
+        <div class="row"><label for="volume">Volume</label><input type="range" id="volume" min="0" max="1" step="0.05" value="0.6"></div>
+        <button type="button" class="btn ghost" id="musicBtn">Play music</button>
+      </fieldset>
+    </form>
+  </div>
+  <p class="note">The Web Player watches for inactivity while its page is open and visible, so keep it in a browser window or install it as an app. For a screensaver that starts by itself anytime, even with every window closed, <a href="download.html?plan=free">download the Windows app</a>. The Mac app is coming soon.</p>
+</div>
+
+<div id="saver" aria-hidden="true">
+  <div class="host" id="saverHost"></div>
+  <div class="fade" id="saverFade"></div>
+  <div class="name" id="saverName"></div>
+  <div class="hint" id="saverHint">Move the mouse or press any key to exit</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const FRACTALS = [
+  {id:"mandel", name:"Mandelbrot dive", desc:"An endless zoom into the seahorse valley", kind:"gl", type:0},
+  {id:"julia",  name:"Julia drift", desc:"A Julia set that morphs as its seed circles", kind:"gl", type:1},
+  {id:"ship",   name:"Burning ship", desc:"The flame-like cousin of the Mandelbrot set", kind:"gl", type:2},
+  {id:"newton", name:"Newton bloom", desc:"Basins of z³ − 1, slowly warping and turning", kind:"gl", type:3},
+  {id:"tree",   name:"Fractal tree", desc:"Six branching trees swaying around a centre", kind:"2d"}
+];
+// Cosine palettes: color(t) = a + b·cos(2π(c·t + d))
+const EDITION = "free";
+const PALETTES = [
+  {id:"aurora", name:"Aurora", a:[.5,.5,.5], b:[.5,.5,.5], c:[1,1,1],   d:[0,.33,.67]},
+  {id:"ember",  name:"Ember",  a:[.5,.5,.5], b:[.5,.5,.5], c:[1,1,.5],  d:[.8,.9,.3]},
+  {id:"ocean",  name:"Ocean",  a:[.5,.5,.5], b:[.5,.5,.5], c:[1,.7,.4], d:[0,.15,.2]},
+  {id:"neon",   name:"Neon",   a:[.8,.5,.4], b:[.2,.4,.2], c:[2,1,1],   d:[0,.25,.25]}
+];
+if (EDITION === "free") {
+  FRACTALS.splice(0, FRACTALS.length, ...FRACTALS.filter(f => ["mandel","julia","tree"].includes(f.id)));
+  PALETTES.splice(0, PALETTES.length, ...PALETTES.filter(p => ["aurora","ocean"].includes(p.id)));
+}
+function palColor(p,t){
+  const r=[0,1,2].map(i=>Math.max(0,Math.min(1,p.a[i]+p.b[i]*Math.cos(6.28318*(p.c[i]*t+p.d[i])))));
+  return r;
+}
+const rgb=(c,a=1)=>`rgba(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.round(c[2]*255)},${a})`;
+
+const VERT=`attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+const FRAG=`#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+uniform vec2 uRes;uniform float uTime;uniform float uType;
+uniform vec3 uA,uB,uC,uD;
+vec3 pal(float t){return clamp(uA+uB*cos(6.28318*(uC*t+uD)),0.,1.);}
+vec2 cmul(vec2 a,vec2 b){return vec2(a.x*b.x-a.y*b.y,a.x*b.y+a.y*b.x);}
+vec2 cdiv(vec2 a,vec2 b){return vec2(a.x*b.x+a.y*b.y,a.y*b.x-a.x*b.y)/dot(b,b);}
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);
+  float t=uTime;vec3 col=vec3(0.);
+  if(uType<.5){
+    float ph=.5-.5*cos(t*.05);
+    float sc=3.2*pow(1.5e-4,ph);
+    vec2 c=vec2(-.743643887,.131825904)+rot(t*.03)*uv*sc;
+    vec2 z=vec2(0.);float n=0.;bool esc=false;
+    for(int i=0;i<256;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.025*sn+t*.04);}
+  }else if(uType<1.5){
+    vec2 c=.7885*vec2(cos(t*.12),sin(t*.12));
+    vec2 z=rot(t*.02)*uv*2.6;float n=0.;bool esc=false;
+    for(int i=0;i<200;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.035*sn+t*.05);}else{col=pal(t*.05+.5)*.12;}
+  }else if(uType<2.5){
+    float ph=.5-.5*cos(t*.06);
+    float sc=3.4*pow(.025,ph);
+    vec2 ctr=mix(vec2(-.45,-.5),vec2(-1.7615,-.0280),smoothstep(0.,.35,ph));
+    vec2 c=ctr+vec2(uv.x,-uv.y)*sc;
+    vec2 z=vec2(0.);float n=0.;bool esc=false;
+    for(int i=0;i<200;i++){z=abs(z);z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.03*sn+t*.04);}
+  }else{
+    float zoom=1.6+.9*sin(t*.07);
+    vec2 z=rot(t*.04)*uv*zoom*2.;
+    float a=1.+.45*sin(t*.18);
+    float n=0.;
+    for(int i=0;i<64;i++){
+      vec2 z2=cmul(z,z);vec2 f=cmul(z2,z)-vec2(1.,0.);
+      if(dot(f,f)<1e-6)break;
+      z-=a*cdiv(f,3.*z2);n+=1.;
+    }
+    float ang=atan(z.y,z.x);
+    float root=floor(mod(ang/2.0944+.5,3.));
+    float shade=pow(1.-n/64.,2.2);
+    col=pal(root/3.+n*.025+t*.03)*(.25+.85*shade);
+  }
+  float v=1.-.35*dot(uv,uv);
+  gl_FragColor=vec4(pow(col,vec3(.95))*v,1.);
+}`;
+
+class Renderer{
+  constructor(host,quality){
+    this.host=host;this.quality=quality;
+    this.glc=document.createElement("canvas");this.c2=document.createElement("canvas");
+    host.append(this.glc,this.c2);
+    // If the graphics card crashed here before, don't use it again; draw on the CPU instead.
+    let gpuOff=false;try{gpuOff=localStorage.getItem("fractalscreen-gpu")==="off";}catch(e){}
+    this.gl=null;
+    if(!gpuOff){try{const o={antialias:false,preserveDrawingBuffer:false,failIfMajorPerformanceCaveat:true,powerPreference:"low-power"};
+      this.gl=this.glc.getContext("webgl",o)||this.glc.getContext("experimental-webgl",o);}catch(e){this.gl=null;}}
+    // willReadFrequently keeps these canvases in ordinary memory, so they still work if the GPU fails
+    this.ctx=this.c2.getContext("2d",{willReadFrequently:true});
+    this.off=document.createElement("canvas");this.offCtx=this.off.getContext("2d",{willReadFrequently:true});
+    this.t=Math.random()*30;this.speed=1;this.raf=0;this.last=0;
+    if(this.gl&&!this.initGL())this.gl=null;   // shader didn't compile: fall back to drawing on the CPU
+    this.glc.addEventListener("webglcontextlost",e=>{e.preventDefault();this.gl=null;
+      try{localStorage.setItem("fractalscreen-gpu","off");}catch(err){}
+      if(this.fractal)this.setFractal(this.fractal);});
+    this.setFractal(FRACTALS[0]);this.setPalette(PALETTES[0]);
+  }
+  initGL(){
+    const gl=this.gl;
+    let ok=true;
+    const sh=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+      if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){ok=false;console.warn(gl.getShaderInfoLog(s));}return s;};
+    const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VERT));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FRAG));
+    gl.linkProgram(pr);
+    if(!ok||!gl.getProgramParameter(pr,gl.LINK_STATUS))return false;
+    gl.useProgram(pr);
+    const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(pr,"p");gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    this.u={};["uRes","uTime","uType","uA","uB","uC","uD"].forEach(n=>this.u[n]=gl.getUniformLocation(pr,n));
+    return true;
+  }
+  setFractal(f){
+    this.fractal=f;
+    const useGL=f.kind==="gl"&&this.gl;
+    this.glc.style.display=useGL?"block":"none";
+    this.c2.style.display=useGL?"none":"block";
+  }
+  setPalette(p){this.palette=p;}
+  size(cv,maxPx){
+    let dpr=Math.min(window.devicePixelRatio||1,2)*this.quality;
+    const cw=Math.max(1,cv.clientWidth),ch=Math.max(1,cv.clientHeight);
+    if(maxPx&&cw*ch*dpr*dpr>maxPx)dpr=Math.sqrt(maxPx/(cw*ch));   // keep the GPU workload modest
+    const w=Math.max(1,Math.round(cw*dpr)),h=Math.max(1,Math.round(ch*dpr));
+    if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+    return [w,h];
+  }
+  start(){if(this.raf)return;this.last=performance.now();const loop=now=>{
+      const dt=Math.min(.1,(now-this.last)/1000);this.last=now;this.t+=dt*this.speed;try{this.draw();}catch(e){console.warn(e);if(this.gl){this.gl=null;this.setFractal(this.fractal);}}this.raf=requestAnimationFrame(loop);};
+    this.raf=requestAnimationFrame(loop);}
+  stop(){cancelAnimationFrame(this.raf);this.raf=0;}
+  draw(){
+    if(this.fractal.kind==="gl"&&this.gl)this.drawGL();
+    else if(this.fractal.kind==="2d")this.drawTree();
+    else this.drawCPU();
+  }
+  drawGL(){
+    if(this.gl.isContextLost()){this.gl=null;this.setFractal(this.fractal);return;}
+    const gl=this.gl,[w,h]=this.size(this.glc,1.6e6),p=this.palette;
+    gl.viewport(0,0,w,h);
+    gl.uniform2f(this.u.uRes,w,h);gl.uniform1f(this.u.uTime,this.t);gl.uniform1f(this.u.uType,this.fractal.type);
+    gl.uniform3fv(this.u.uA,p.a);gl.uniform3fv(this.u.uB,p.b);gl.uniform3fv(this.u.uC,p.c);gl.uniform3fv(this.u.uD,p.d);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+  }
+  drawCPU(){
+    // Same fractals as the shader, computed in JavaScript at a lower resolution and scaled up.
+    const [W,H]=this.size(this.c2),p=this.palette,t=this.t,type=this.fractal.type;
+    const k=Math.min(1,Math.sqrt(45000/(W*H))),w=Math.max(40,Math.round(W*k)),h=Math.max(25,Math.round(H*k));
+    if(this.off.width!==w||this.off.height!==h){this.off.width=w;this.off.height=h;this.img=null;}
+    if(!this.img)this.img=this.offCtx.createImageData(w,h);
+    const px=this.img.data,m=Math.min(w,h),TAU=6.28318;
+    const pal=(x,o)=>{for(let i=0;i<3;i++){const v=p.a[i]+p.b[i]*Math.cos(TAU*(p.c[i]*x+p.d[i]));o[i]=v<0?0:v>1?1:v;}return o;};
+    const col=[0,0,0];
+    let cx=0,cy=0,sc=1,ca=1,sa=0,jx=0,jy=0,relax=1;
+    if(type===0){const ph=.5-.5*Math.cos(t*.05);sc=3.2*Math.pow(1.5e-4,ph);ca=Math.cos(t*.03);sa=Math.sin(t*.03);cx=-.743643887;cy=.131825904;}
+    else if(type===1){jx=.7885*Math.cos(t*.12);jy=.7885*Math.sin(t*.12);ca=Math.cos(t*.02);sa=Math.sin(t*.02);sc=2.6;}
+    else if(type===2){const ph=.5-.5*Math.cos(t*.06);sc=3.4*Math.pow(.025,ph);const e=Math.min(1,Math.max(0,ph/.35)),s2=e*e*(3-2*e);cx=-.45+(-1.7615+.45)*s2;cy=-.5+(-.028+.5)*s2;}
+    else{sc=(1.6+.9*Math.sin(t*.07))*2;ca=Math.cos(t*.04);sa=Math.sin(t*.04);relax=1+.45*Math.sin(t*.18);}
+    for(let y=0;y<h;y++){
+      const v=((h-y-.5)-.5*h)/m;
+      for(let x=0;x<w;x++){
+        const u=((x+.5)-.5*w)/m;
+        col[0]=col[1]=col[2]=0;
+        if(type===0||type===1){
+          const ru=ca*u+sa*v,rv=-sa*u+ca*v;
+          let zx,zy,qx,qy,max;
+          if(type===0){zx=0;zy=0;qx=cx+ru*sc;qy=cy+rv*sc;max=300;}else{zx=ru*sc;zy=rv*sc;qx=jx;qy=jy;max=200;}
+          let n=0,esc=false;
+          for(;n<max;n++){const nx=zx*zx-zy*zy+qx;zy=2*zx*zy+qy;zx=nx;if(zx*zx+zy*zy>256){esc=true;break;}}
+          if(esc){const sn=n+1-Math.log2(Math.log2(zx*zx+zy*zy))+4;pal(type===0?.025*sn+t*.04:.035*sn+t*.05,col);}
+          else if(type===1){pal(t*.05+.5,col);col[0]*=.12;col[1]*=.12;col[2]*=.12;}
+        }else if(type===2){
+          const qx=cx+u*sc,qy=cy-v*sc;let zx=0,zy=0,n=0,esc=false;
+          for(;n<200;n++){zx=Math.abs(zx);zy=Math.abs(zy);const nx=zx*zx-zy*zy+qx;zy=2*zx*zy+qy;zx=nx;if(zx*zx+zy*zy>256){esc=true;break;}}
+          if(esc){const sn=n+1-Math.log2(Math.log2(zx*zx+zy*zy))+4;pal(.03*sn+t*.04,col);}
+        }else{
+          let zx=(ca*u+sa*v)*sc,zy=(-sa*u+ca*v)*sc,n=0;
+          for(;n<48;n++){
+            const x2=zx*zx-zy*zy,y2=2*zx*zy,fx=x2*zx-y2*zy-1,fy=x2*zy+y2*zx;
+            if(fx*fx+fy*fy<1e-6)break;
+            const dx=3*x2,dy=3*y2,dd=dx*dx+dy*dy||1e-12;
+            zx-=relax*(fx*dx+fy*dy)/dd;zy-=relax*(fy*dx-fx*dy)/dd;
+          }
+          const a=Math.atan2(zy,zx)/2.0944+.5,root=Math.floor(((a%3)+3)%3),shd=Math.pow(1-n/48,2.2);
+          pal(root/3+n*.033+t*.03,col);const f=.25+.85*shd;col[0]*=f;col[1]*=f;col[2]*=f;
+        }
+        const vig=1-.35*(u*u+v*v),o=(y*w+x)*4;
+        px[o]=Math.min(255,col[0]*vig*255);px[o+1]=Math.min(255,col[1]*vig*255);px[o+2]=Math.min(255,col[2]*vig*255);px[o+3]=255;
+      }
+    }
+    this.offCtx.putImageData(this.img,0,0);
+    const ctx=this.ctx;ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+    ctx.drawImage(this.off,0,0,W,H);
+  }
+  drawNoGL(){
+    this.c2.style.display="block";
+    const [w,h]=this.size(this.c2),x=this.ctx;
+    x.fillStyle="#111";x.fillRect(0,0,w,h);x.fillStyle="#fff";x.font=`${Math.round(h/18)}px sans-serif`;x.textAlign="center";
+    x.fillText("This fractal needs WebGL, which this browser has turned off.",w/2,h/2);
+  }
+  drawTree(){
+    const [w,h]=this.size(this.c2),x=this.ctx,t=this.t,p=this.palette;
+    const bg=x.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.hypot(w,h)/2);
+    bg.addColorStop(0,rgb(palColor(p,t*.03+.5).map(v=>v*.18)));bg.addColorStop(1,"#000");
+    x.globalCompositeOperation="source-over";x.fillStyle=bg;x.fillRect(0,0,w,h);
+    x.globalCompositeOperation="lighter";x.lineCap="round";
+    const D=10,trunks=6,base=Math.min(w,h)*.13;
+    let level=[];
+    for(let k=0;k<trunks;k++)level.push({x:w/2,y:h/2,a:k*Math.PI*2/trunks+t*.06});
+    let len=base;
+    for(let d=0;d<D;d++){
+      const spread=.32+.22*Math.sin(t*.35+d*.45);
+      const twist=.12*Math.sin(t*.22+d*.8);
+      x.beginPath();const next=[];
+      for(const s of level){
+        const ex=s.x+Math.cos(s.a)*len,ey=s.y+Math.sin(s.a)*len;
+        x.moveTo(s.x,s.y);x.lineTo(ex,ey);
+        if(d<D-1){next.push({x:ex,y:ey,a:s.a-spread+twist},{x:ex,y:ey,a:s.a+spread+twist});}
+      }
+      x.strokeStyle=rgb(palColor(p,d/D*.9+t*.04),.55+.45*(1-d/D));
+      x.lineWidth=Math.max(.6,(D-d)*base/90);
+      x.stroke();level=next;len*=.74;
+    }
+    x.globalCompositeOperation="source-over";
+  }
+}
+
+/* ---------- generative focus music ---------- */
+class Music{
+  constructor(){this.ctx=null;this.vol=.6;this.playing=false;this.timer=0;}
+  ensure(){
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+    if(!this.ctx){this.ctx=new AC();this.build();}
+    if(this.ctx.state==="suspended")this.ctx.resume().catch(()=>{});
+    return true;
+  }
+  get unlocked(){return !!this.ctx&&this.ctx.state==="running";}
+  build(){
+    const c=this.ctx;
+    this.master=c.createGain();this.master.gain.value=0;
+    const comp=c.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;
+    this.master.connect(comp);comp.connect(c.destination);
+    // reverb from a generated impulse
+    const len=c.sampleRate*3.2,ir=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+    this.verb=c.createConvolver();this.verb.buffer=ir;this.verbSend=c.createGain();this.verbSend.gain.value=.35;
+    this.verbSend.connect(this.verb);this.verb.connect(this.master);
+    // dotted-eighth echo
+    this.bpm=92;this.six=60/this.bpm/4;
+    this.delay=c.createDelay(2);this.delay.delayTime.value=this.six*3;
+    const fb=c.createGain();fb.gain.value=.38;const dlp=c.createBiquadFilter();dlp.type="lowpass";dlp.frequency.value=2200;
+    this.delaySend=c.createGain();this.delaySend.gain.value=.4;
+    this.delaySend.connect(this.delay);this.delay.connect(dlp);dlp.connect(fb);fb.connect(this.delay);dlp.connect(this.master);dlp.connect(this.verbSend);
+    // buses
+    this.padBus=c.createGain();this.padBus.connect(this.master);this.padBus.connect(this.verbSend);
+    this.lfo=c.createOscillator();this.lfo.frequency.value=.06;this.lfoAmt=c.createGain();this.lfoAmt.gain.value=450;
+    this.lfo.connect(this.lfoAmt);this.lfo.start();
+    const nl=c.sampleRate*.2;this.noise=c.createBuffer(1,nl,c.sampleRate);const nd=this.noise.getChannelData(0);
+    for(let i=0;i<nl;i++)nd[i]=Math.random()*2-1;
+    this.chords=[
+      {bass:45,pad:[57,60,64,67,71]}, // Am9
+      {bass:41,pad:[53,57,60,64,67]}, // Fmaj9
+      {bass:48,pad:[55,60,64,67,71]}, // Cmaj7
+      {bass:40,pad:[55,59,62,64,67]}  // Em7
+    ];
+    this.arpPat=[0,2,4,2,1,3,4,3];
+  }
+  hz(m){return 440*Math.pow(2,(m-69)/12);}
+  setVolume(v){this.vol=v;if(this.ctx&&this.playing)this.master.gain.setTargetAtTime(v*.8,this.ctx.currentTime,.2);}
+  start(){
+    if(!this.ensure()||this.playing)return;
+    const c=this.ctx;this.playing=true;this.step=0;this.next=c.currentTime+.1;
+    this.master.gain.cancelScheduledValues(c.currentTime);this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);
+    this.master.gain.linearRampToValueAtTime(this.vol*.8,c.currentTime+3);
+    clearInterval(this.timer);this.timer=setInterval(()=>this.schedule(),25);
+  }
+  stop(){
+    if(!this.ctx||!this.playing)return;this.playing=false;
+    const c=this.ctx;this.master.gain.cancelScheduledValues(c.currentTime);
+    this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);this.master.gain.linearRampToValueAtTime(0,c.currentTime+1.5);
+    clearInterval(this.timer);this.timer=0;
+  }
+  schedule(){
+    const c=this.ctx;
+    while(this.next<c.currentTime+.15){this.play(this.step,this.next);this.next+=this.six;this.step++;}
+  }
+  play(s,t){
+    const chord=this.chords[Math.floor(s/32)%4],local=s%32,bar=Math.floor(s/16),q=s%16;
+    const section=bar%40;const drums=section>=4&&section<36,hats=section>=8&&section<34;
+    if(local===0)this.pad(chord.pad,t,this.six*32);
+    if(Math.random()<.85){
+      const tones=chord.pad,idx=this.arpPat[s%8]+(bar%4===3&&q>7?1:0);
+      const n=tones[idx%tones.length]+12*(1+Math.floor(idx/tones.length));
+      this.pluck(n,t,q%4===0?.16:.09);
+    }
+    if(drums&&q%4===0){this.kick(t);}
+    if(drums&&q%4===2)this.bass(chord.bass,t);
+    if(drums&&q===14&&Math.random()<.5)this.bass(chord.bass+12,t);
+    if(hats&&q%4===2)this.hat(t,.09);
+    else if(hats&&q%2===1&&Math.random()<.35)this.hat(t,.03);
+    if(Math.random()<.025)this.blip(t);
+  }
+  pad(notes,t,dur){
+    const c=this.ctx;
+    notes.forEach(m=>{
+      const f=c.createBiquadFilter();f.type="lowpass";f.frequency.value=900;f.Q.value=.7;this.lfoAmt.connect(f.frequency);
+      const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+1.6);
+      g.gain.setValueAtTime(.045,t+dur-.2);g.gain.linearRampToValueAtTime(0,t+dur+1.8);
+      f.connect(g);g.connect(this.padBus);
+      [-7,7].forEach(cents=>{const o=c.createOscillator();o.type="sawtooth";o.frequency.value=this.hz(m);o.detune.value=cents;
+        o.connect(f);o.start(t);o.stop(t+dur+2);});
+      setTimeout(()=>{try{this.lfoAmt.disconnect(f.frequency);}catch(e){}},(t-c.currentTime+dur+2.2)*1000);
+    });
+  }
+  pluck(m,t,vel){
+    const c=this.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
+    o.type="triangle";o.frequency.value=this.hz(m);f.type="lowpass";f.frequency.setValueAtTime(3200,t);f.frequency.exponentialRampToValueAtTime(700,t+.25);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vel,t+.005);g.gain.exponentialRampToValueAtTime(.0005,t+.32);
+    o.connect(f);f.connect(g);g.connect(this.master);g.connect(this.delaySend);g.connect(this.verbSend);o.start(t);o.stop(t+.35);
+  }
+  kick(t){
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
+    o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);
+    g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);
+    o.connect(g);g.connect(this.master);o.start(t);o.stop(t+.4);
+    // gentle side-chain pump on the pads
+    this.padBus.gain.setValueAtTime(.45,t);this.padBus.gain.linearRampToValueAtTime(1,t+this.six*3);
+  }
+  bass(m,t){
+    const c=this.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
+    o.type="sawtooth";o.frequency.value=this.hz(m);f.type="lowpass";f.frequency.value=380;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+this.six*1.8);
+    o.connect(f);f.connect(g);g.connect(this.master);o.start(t);o.stop(t+this.six*2);
+  }
+  hat(t,vel){
+    const c=this.ctx,src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+    src.buffer=this.noise;f.type="highpass";f.frequency.value=7500;
+    g.gain.setValueAtTime(vel,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);
+    src.connect(f);f.connect(g);g.connect(this.master);g.connect(this.verbSend);src.start(t);src.stop(t+.06);
+  }
+  blip(t){
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
+    o.type="sine";o.frequency.setValueAtTime(1800+Math.random()*1400,t);
+    g.gain.setValueAtTime(.035,t);g.gain.exponentialRampToValueAtTime(.0005,t+.12);
+    o.connect(g);g.connect(this.delaySend);g.connect(this.verbSend);o.start(t);o.stop(t+.15);
+  }
+}
+const music=new Music();
+
+/* ---------- settings ---------- */
+const store={get(){try{return JSON.parse(localStorage.getItem("fractalscreen-free")||"{}");}catch(e){return{};}},
+  set(v){try{localStorage.setItem("fractalscreen-free",JSON.stringify(v));}catch(e){}}};
+const saved=store.get();
+const state={
+  fractal:FRACTALS.some(f=>f.id===saved.fractal)?saved.fractal:"mandel",
+  palette:PALETTES.some(p=>p.id===saved.palette)?saved.palette:"aurora",
+  speed:+saved.speed||1, wait:+saved.wait||180, wakelock:saved.wakelock!==false, cycle:!!saved.cycle, enabled:saved.enabled!==false,
+  music:saved.music!==false, volume:saved.volume!=null?+saved.volume:.6
+};
+window.FS_state = state;
+document.getElementById("wakelock").checked = state.wakelock;
+if (EDITION === "free") {
+  state.music = false; state.cycle = false;
+  document.getElementById("music").closest("fieldset").hidden = true;
+  document.getElementById("cycle").closest("label").hidden = true;
+}
+const $=id=>document.getElementById(id);
+const fChoices=$("fractalChoices"),pChoices=$("paletteChoices");
+FRACTALS.forEach(f=>{
+  const l=document.createElement("label");l.className="choice";
+  l.innerHTML=`<input type="radio" name="fractal" value="${f.id}"><div><strong>${f.name}</strong><span>${f.desc}</span></div>`;
+  fChoices.append(l);
+});
+PALETTES.forEach(p=>{
+  const stops=[0,.2,.4,.6,.8,1].map(t=>rgb(palColor(p,t))).join(",");
+  const l=document.createElement("label");l.className="swatch";
+  l.innerHTML=`<input type="radio" name="palette" value="${p.id}"><i style="background:linear-gradient(90deg,${stops})"></i>${p.name}`;
+  pChoices.append(l);
+});
+document.querySelector(`input[name=fractal][value=${state.fractal}]`).checked=true;
+document.querySelector(`input[name=palette][value=${state.palette}]`).checked=true;
+$("speed").value=state.speed;$("wait").value=String(state.wait);$("cycle").checked=state.cycle;$("enabled").checked=state.enabled;
+$("music").checked=state.music;$("volume").value=state.volume;music.vol=state.volume;
+const musicBtn=$("musicBtn");
+function syncMusicBtn(){musicBtn.textContent=music.playing?"Stop music":"Play music";}
+musicBtn.addEventListener("click",()=>{if(music.playing)music.stop();else music.start();syncMusicBtn();updateStatus();});
+$("volume").addEventListener("input",e=>{state.volume=+e.target.value;music.setVolume(state.volume);store.set(state);});
+// Browsers only allow sound after a click or key press on the page, so unlock audio on the first one.
+const unlock=()=>{music.ensure();setTimeout(updateStatus,100);};
+window.addEventListener("pointerdown",unlock,{once:true});window.addEventListener("keydown",unlock,{once:true});
+
+const byId=(arr,id)=>arr.find(o=>o.id===id);
+const preview=new Renderer($("previewHost"),1);
+const saverR=new Renderer($("saverHost"),.85);
+function apply(){
+  const f=byId(FRACTALS,state.fractal),p=byId(PALETTES,state.palette);
+  preview.setFractal(f);preview.setPalette(p);preview.speed=state.speed;
+  saverR.setPalette(p);saverR.speed=state.speed;
+  if(!saverOn)saverR.setFractal(f);
+  $("previewCaption").textContent=`Live preview: ${f.name}, ${p.name}`;
+  store.set(state);updateStatus();
+}
+$("settings").addEventListener("change",e=>{
+  const t=e.target;
+  if(t.name==="fractal")state.fractal=t.value;
+  if(t.name==="palette")state.palette=t.value;
+  if(t.id==="speed")state.speed=+t.value;
+  if(t.id==="wait")state.wait=+t.value;
+  if(t.id==="cycle")state.cycle=t.checked;
+  if(t.id==="wakelock")state.wakelock=t.checked;
+  if(t.id==="enabled")state.enabled=t.checked;
+  if(t.id==="music"){state.music=t.checked;if(!t.checked&&saverOn)music.stop();}
+  if(t.id==="volume")state.volume=+t.value;
+  apply();resetIdle();
+});
+$("speed").addEventListener("input",e=>{state.speed=+e.target.value;preview.speed=state.speed;});
+$("nextBtn").addEventListener("click",()=>{
+  const i=(FRACTALS.findIndex(f=>f.id===state.fractal)+1)%FRACTALS.length;
+  state.fractal=FRACTALS[i].id;document.querySelector(`input[name=fractal][value=${state.fractal}]`).checked=true;apply();
+});
+
+/* ---------- screensaver ---------- */
+const saver=$("saver"),fade=$("saverFade"),hint=$("saverHint"),nameEl=$("saverName");
+let saverOn=false,saverStarted=0,idleTimer=0,cycleTimer=0,hintTimer=0,lastActive=Date.now(),startPos=null;
+const fmtWait=s=>s<60?`${s} seconds`:(s===60?"1 minute":`${s/60} minutes`);
+function updateStatus(){
+  const s=$("status");
+  let msg=state.enabled?`Starts after ${fmtWait(state.wait)} without mouse, keyboard or touch activity.`:"Screensaver is off. Preview still works.";
+  if(state.enabled&&state.music&&!music.unlocked)msg+=" Click anywhere on this page once so your browser allows the music to play.";
+  s.textContent=msg;
+}
+function showName(f){nameEl.textContent=f.name;nameEl.style.opacity=1;}
+function startSaver(fromPreview){
+  if(saverOn||window.FS_LOCKED)return;saverOn=true;saverStarted=performance.now();startPos=null;
+  const f=byId(FRACTALS,state.fractal);saverR.setFractal(f);showName(f);
+  saver.classList.add("on");saver.setAttribute("aria-hidden","false");preview.stop();saverR.start();
+  if(state.music){music.start();syncMusicBtn();}
+  if(window.FS_wakeOn)FS_wakeOn();
+  hint.style.opacity=1;clearTimeout(hintTimer);hintTimer=setTimeout(()=>{hint.style.opacity=0;nameEl.style.opacity=0;},3500);
+  if(fromPreview&&saver.requestFullscreen){saver.requestFullscreen().catch(()=>{});}
+  if(state.cycle){
+    let i=FRACTALS.indexOf(f);
+    cycleTimer=setInterval(()=>{
+      fade.classList.add("dark");
+      setTimeout(()=>{i=(i+1)%FRACTALS.length;saverR.setFractal(FRACTALS[i]);showName(FRACTALS[i]);fade.classList.remove("dark");
+        setTimeout(()=>nameEl.style.opacity=0,3000);},800);
+    },25000);
+  }
+}
+function stopSaver(){
+  if(!saverOn)return;saverOn=false;clearInterval(cycleTimer);clearTimeout(hintTimer);fade.classList.remove("dark");
+  saverR.stop();music.stop();syncMusicBtn();if(window.FS_wakeOff)FS_wakeOff();saver.classList.remove("on");saver.setAttribute("aria-hidden","true");
+  if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+  saverR.setFractal(byId(FRACTALS,state.fractal));
+  if(!document.hidden)preview.start();resetIdle();
+}
+function resetIdle(){
+  lastActive=Date.now();clearTimeout(idleTimer);
+  if(state.enabled&&!saverOn)idleTimer=setTimeout(()=>{if(!document.hidden)startSaver(false);else resetIdle();},state.wait*1000);
+}
+function activity(e){
+  if(saverOn){
+    if(performance.now()-saverStarted<700)return; // ignore the click that started preview
+    if(e.type==="mousemove"||e.type==="pointermove"){
+      if(!startPos){startPos=[e.clientX,e.clientY];return;}
+      if(Math.hypot(e.clientX-startPos[0],e.clientY-startPos[1])<10)return;
+    }
+    e.preventDefault&&e.type==="keydown"&&e.preventDefault();
+    stopSaver();return;
+  }
+  resetIdle();
+}
+["mousemove","mousedown","keydown","touchstart","wheel","scroll"].forEach(ev=>window.addEventListener(ev,activity,{passive:ev!=="keydown"}));
+document.addEventListener("fullscreenchange",()=>{if(!document.fullscreenElement&&saverOn&&performance.now()-saverStarted>700)stopSaver();});
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){preview.stop();}else if(!saverOn){preview.start();resetIdle();}
+});
+$("previewBtn").addEventListener("click",()=>startSaver(true));
+
+window.FS_stopSaver=stopSaver;
+apply();preview.start();resetIdle();
+})();
+</script>
+<script>
+
+(function () {
+  // Keep the screen on while fractals play (Screen Wake Lock, supported in most modern browsers)
+  var lock = null;
+  window.FS_wakeOn = function () {
+    try { if (window.FS_state && FS_state.wakelock && navigator.wakeLock) navigator.wakeLock.request("screen").then(function (l) { lock = l; }, function () {}); } catch (e) {}
+  };
+  window.FS_wakeOff = function () { try { if (lock) lock.release(); } catch (e) {} lock = null; };
+
+  // Offer to install the Web Player as an app (Chrome, Edge)
+  var deferred = null, box = document.getElementById("installBox"), btn = document.getElementById("installBtn");
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); deferred = e; if (box) box.hidden = false; });
+  if (btn) btn.addEventListener("click", function () {
+    if (!deferred) return; deferred.prompt();
+    deferred.userChoice.then(function () { deferred = null; box.hidden = true; });
+  });
+  window.addEventListener("appinstalled", function () { if (box) box.hidden = true; });
+  if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});
+})();
+window.FS_lock = function (title, text, actions) {
+  window.FS_LOCKED = true;
+  if (window.FS_stopSaver) window.FS_stopSaver();
+  var host = document.querySelector(".screen"), o = document.getElementById("lockOverlay");
+  if (!o) { o = document.createElement("div"); o.id = "lockOverlay"; o.setAttribute("role", "status"); host.appendChild(o); }
+  o.innerHTML = "<h2>" + title + "</h2><p>" + text + "</p><div class=\"lock-actions\">" + (actions || "") + "</div>";
+  ["previewBtn", "nextBtn"].forEach(function (id) { var b = document.getElementById(id); if (b) b.disabled = true; });
+};
+window.FS_unlock = function () {
+  window.FS_LOCKED = false;
+  var o = document.getElementById("lockOverlay"); if (o) o.remove();
+  ["previewBtn", "nextBtn"].forEach(function (id) { var b = document.getElementById(id); if (b) b.disabled = false; });
+};
+(function () {
+  var DAYS = 14, KEY = "fractalscreen-trial-start", SEEN = "fractalscreen-trial-seen", start = 0, seen = 0;
+  try {
+    start = +localStorage.getItem(KEY) || 0; seen = +localStorage.getItem(SEEN) || 0;
+    if (!start) { start = Date.now(); localStorage.setItem(KEY, String(start)); }
+  } catch (e) { start = Date.now(); }
+  var info = document.getElementById("licenseInfo"), timer = 0;
+  function fmt(ms) {
+    var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+    if (d > 0) return d + (d === 1 ? " day, " : " days, ") + h + (h === 1 ? " hour" : " hours");
+    return h + (h === 1 ? " hour, " : " hours, ") + m + (m === 1 ? " minute" : " minutes");
+  }
+  function tick() {
+    var now = Math.max(Date.now(), seen);   // winding the clock back doesn't extend the trial
+    seen = now; try { localStorage.setItem(SEEN, String(now)); } catch (e) {}
+    var left = start + DAYS * 864e5 - now;
+    if (left > 0) {
+      info.innerHTML = "Free trial: <strong>" + fmt(left) + "</strong> left. <a href=\"index.html#pricing\">Get Premium</a> to keep it running.";
+    } else {
+      clearInterval(timer);
+      info.innerHTML = "Your 2-week free trial has ended.";
+      window.FS_lock("Your 2-week free trial has ended", "Get FRACTALSCREEN Premium to keep the fractals running.",
+        "<a class=\"btn\" href=\"index.html#pricing\">Get Premium</a>");
+    }
+  }
+  timer = setInterval(tick, 30000); tick();
+})();
+</script>
+</body>
+</html>

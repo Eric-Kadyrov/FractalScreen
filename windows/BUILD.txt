@@ -1,0 +1,12 @@
+Build the Windows screensaver and installers (on Linux with mingw-w64 and NSIS):
+
+  x86_64-w64-mingw32-windres res.rc -O coff -o res.o
+  mkdir -p Free Premium
+  x86_64-w64-mingw32-gcc -O2 -municode -mwindows -static fractalscreen.c res.o -o Free/FractalScreen.scr -lopengl32 -lgdi32 -ladvapi32 -lshell32 -lwinhttp
+  x86_64-w64-mingw32-gcc -O2 -municode -mwindows -static -DPREMIUM fractalscreen.c res.o -o Premium/FractalScreen.scr -lopengl32 -lgdi32 -ladvapi32 -lshell32 -lwinhttp
+  makensis -DEDITION=Free installer.nsi
+  makensis -DEDITION=Premium installer.nsi
+
+Set your real website with -DSITE_URL=L\"https://yourdomain.com/#pricing\" (used by "Get Premium" in the Free settings window).
+
+Set your license server with -DAPI_BASE=L\"https://yourdomain.com/api\" (default https://fractalscreen.com/api).

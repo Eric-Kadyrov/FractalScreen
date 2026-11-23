@@ -1,0 +1,14 @@
+# Windows build output
+windows/*.o
+windows/Free/
+windows/Premium/
+windows/*-Setup.exe
+# OS / editor clutter
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+# Never commit secrets
+.env
+*.key
