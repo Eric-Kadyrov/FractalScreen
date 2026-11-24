@@ -22,7 +22,7 @@ Live at **https://fractalscreen.com**.
 - `api/`: license server in PHP (`verify.php`, `license.php`): checks Stripe subscriptions. Copy `config.example.php` to `config.php` on the server and add the Stripe key; `config.php` is never committed.
 - `site.js`: Stripe Payment Links and customer portal link
 - `consent.js`: cookie banner; Google Analytics runs only after visitors accept
-- `music.js`: cosmic focus music for the Web Player, generated live in the browser
+- Cosmic focus music for the Web Player is built into `app.html` and `app-premium.html` (generated live in the browser)
 - `sw.js`, `manifest-*.webmanifest`: let visitors install the Web Player as an app
 - `README.txt`: step-by-step launch guide (Hostinger, Stripe, testing)
 

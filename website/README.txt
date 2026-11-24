@@ -11,7 +11,6 @@ WHAT'S IN THIS FOLDER
   api/                    License server (PHP): checks Stripe subscriptions
   contact.php, contact.js Contact form, emails contact@fractalscreen.com
   site.js                 Stripe checkout links and "Manage subscription" link  <-- you edit this
-  music.js                Cosmic focus music for the Web Player (generated live, follows device volume)
   consent.js              Cookie banner (Google Analytics only after "Accept")
   sw.js, manifest-*.webmanifest   Install the Web Player as an app / offline use
   .htaccess, robots.txt, sitemap.xml
