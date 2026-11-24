@@ -13,6 +13,7 @@
 #include <winhttp.h>
 #include <time.h>
 #include <stdio.h>
+#include "music.h"
 
 /* Licensing server (Cloudflare Pages Functions in website/functions/api) */
 #ifndef API_BASE
@@ -80,6 +81,7 @@ static const Palette ALL_PALETTES[] = {
 static int gFractalSel = 0;   /* index into FRACTAL_IDS, or NFRACT = cycle (Premium) */
 static int gPaletteSel = 0;   /* index into PALETTE_IDS */
 static int gSpeedSel = 1;     /* 0 slow, 1 normal, 2 fast */
+static int gMusic = 1;        /* play cosmic focus music in full screen */
 static const float SPEEDS[] = {0.5f, 1.0f, 2.0f};
 
 static DWORD regGet(const wchar_t *name, DWORD def) {
@@ -105,6 +107,7 @@ static void loadSettings(void) {
   gFractalSel = (int)regGet(L"Fractal", 0); if (gFractalSel < 0 || gFractalSel >= maxF) gFractalSel = 0;
   gPaletteSel = (int)regGet(L"Palette", 0); if (gPaletteSel < 0 || gPaletteSel >= NPAL) gPaletteSel = 0;
   gSpeedSel = (int)regGet(L"Speed", 1); if (gSpeedSel < 0 || gSpeedSel > 2) gSpeedSel = 1;
+  gMusic = regGet(L"Music", 1) != 0;
 }
 
 
@@ -478,6 +481,7 @@ static int runSaver(HINSTANCE inst, HWND parent) {
     return 0;
   }
   if (!initGL()) { DestroyWindow(gWnd); return 1; }
+  if (!gPreview && gMusic) music_start();   /* full screen only, never in the small preview */
   gCur = gFractalSel < NFRACT ? gFractalSel : 0;
   gT = (double)(GetTickCount() % 30000) / 1000.0;
   QueryPerformanceFrequency(&gFreq); QueryPerformanceCounter(&gLast); gStartTick = GetTickCount();
@@ -495,8 +499,8 @@ static int runSaver(HINSTANCE inst, HWND parent) {
 }
 
 /* ---------- settings dialog (/c) ---------- */
-enum { ID_FRACT = 101, ID_PAL, ID_SPEED, ID_OK, ID_CANCEL, ID_UPGRADE, ID_KEY, ID_LSTATUS, ID_PLAY };
-static HWND hKey, hLStatus;
+enum { ID_FRACT = 101, ID_PAL, ID_SPEED, ID_OK, ID_CANCEL, ID_UPGRADE, ID_KEY, ID_LSTATUS, ID_PLAY, ID_MUSIC };
+static HWND hKey, hLStatus, hMusic;
 static HWND hFract, hPal, hSpeed; static HFONT gFont;
 static HWND mk(HWND p, const wchar_t *cls, const wchar_t *txt, DWORD st, int x, int y, int w, int h, int id) {
   HWND c = CreateWindowExW(0, cls, txt, WS_CHILD | WS_VISIBLE | st, x, y, w, h, p, (HMENU)(INT_PTR)id, GetModuleHandleW(NULL), NULL);
@@ -519,30 +523,32 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
     SendMessageW(hPal, CB_SETCURSEL, gPaletteSel, 0);
     mk(h, L"STATIC", L"Speed", 0, 20, 128, 90, 20, 0);
     hSpeed = mk(h, L"COMBOBOX", L"", CBS_DROPDOWNLIST | WS_TABSTOP, 120, 124, 200, 200, ID_SPEED);
+    hMusic = mk(h, L"BUTTON", L"Play cosmic focus music (volume follows Windows)", BS_AUTOCHECKBOX | WS_TABSTOP, 120, 160, 310, 24, ID_MUSIC);
+    SendMessageW(hMusic, BM_SETCHECK, gMusic ? BST_CHECKED : BST_UNCHECKED, 0);
     SendMessageW(hSpeed, CB_ADDSTRING, 0, (LPARAM)L"Slow"); SendMessageW(hSpeed, CB_ADDSTRING, 0, (LPARAM)L"Normal"); SendMessageW(hSpeed, CB_ADDSTRING, 0, (LPARAM)L"Fast");
     SendMessageW(hSpeed, CB_SETCURSEL, gSpeedSel, 0);
 #ifndef PREMIUM
     { wchar_t msg[200]; long left = trialSecondsLeft();
       if (left > 0) swprintf(msg, 200, L"Free trial: %ld days, %ld hours left.\nPremium unlocks all 5 fractals, 4 color schemes and cycling.", left / 86400, (left % 86400) / 3600);
       else swprintf(msg, 200, L"Your 4-week free trial has ended.\nGet Premium to keep the fractals running.");
-      mk(h, L"STATIC", msg, 0, 20, 166, 410, 52, 0); }
-    mk(h, L"BUTTON", L"Get Premium", WS_TABSTOP, 20, 236, 110, 30, ID_UPGRADE);
+      mk(h, L"STATIC", msg, 0, 20, 202, 410, 52, 0); }
+    mk(h, L"BUTTON", L"Get Premium", WS_TABSTOP, 20, 272, 110, 30, ID_UPGRADE);
 #else
-    mk(h, L"STATIC", L"License key", 0, 20, 170, 90, 20, 0);
+    mk(h, L"STATIC", L"License key", 0, 20, 206, 90, 20, 0);
     { wchar_t key[96]; regGetStr(L"LicenseKey", key, 96);
-      hKey = mk(h, L"EDIT", key, WS_BORDER | WS_TABSTOP | ES_AUTOHSCROLL, 120, 166, 200, 24, ID_KEY); }
+      hKey = mk(h, L"EDIT", key, WS_BORDER | WS_TABSTOP | ES_AUTOHSCROLL, 120, 202, 200, 24, ID_KEY); }
     { wchar_t st[160], d[64]; DWORD until = regGet(L"LicenseUntil", 0);
       if (licenseOK()) { formatDate(until, d, 64); swprintf(st, 160, L"Active, renews or ends on %ls", d); }
       else swprintf(st, 160, L"%ls", regGet(L"LastCheck", 0) ? L"Not active. Renew, or check the key." : L"Not activated yet. Paste the key from your download page.");
-      hLStatus = mk(h, L"STATIC", st, 0, 120, 196, 220, 34, ID_LSTATUS); }
+      hLStatus = mk(h, L"STATIC", st, 0, 120, 232, 220, 34, ID_LSTATUS); }
 #endif
 #ifndef PREMIUM
-    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 140, 236, 100, 30, ID_PLAY);
+    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 140, 272, 100, 30, ID_PLAY);
 #else
-    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 20, 236, 100, 30, ID_PLAY);
+    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 20, 272, 100, 30, ID_PLAY);
 #endif
-    mk(h, L"BUTTON", L"OK", BS_DEFPUSHBUTTON | WS_TABSTOP, 260, 236, 80, 30, ID_OK);
-    mk(h, L"BUTTON", L"Cancel", WS_TABSTOP, 350, 236, 80, 30, ID_CANCEL);
+    mk(h, L"BUTTON", L"OK", BS_DEFPUSHBUTTON | WS_TABSTOP, 260, 272, 80, 30, ID_OK);
+    mk(h, L"BUTTON", L"Cancel", WS_TABSTOP, 350, 272, 80, 30, ID_CANCEL);
     return 0; }
   case WM_COMMAND:
     switch (LOWORD(w)) {
@@ -550,6 +556,7 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
       regSet(L"Fractal", (DWORD)SendMessageW(hFract, CB_GETCURSEL, 0, 0));
       regSet(L"Palette", (DWORD)SendMessageW(hPal, CB_GETCURSEL, 0, 0));
       regSet(L"Speed", (DWORD)SendMessageW(hSpeed, CB_GETCURSEL, 0, 0));
+      regSet(L"Music", SendMessageW(hMusic, BM_GETCHECK, 0, 0) == BST_CHECKED ? 1 : 0);
 #ifdef PREMIUM
       { wchar_t nk[96], ok[96]; GetWindowTextW(hKey, nk, 96); regGetStr(L"LicenseKey", ok, 96);
         wchar_t *a = nk; while (*a == L' ') a++; size_t L = wcslen(a); while (L && (a[L-1] == L' ' || a[L-1] == L'\r' || a[L-1] == L'\n')) a[--L] = 0;
@@ -573,6 +580,7 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
       regSet(L"Fractal", (DWORD)SendMessageW(hFract, CB_GETCURSEL, 0, 0));
       regSet(L"Palette", (DWORD)SendMessageW(hPal, CB_GETCURSEL, 0, 0));
       regSet(L"Speed", (DWORD)SendMessageW(hSpeed, CB_GETCURSEL, 0, 0));
+      regSet(L"Music", SendMessageW(hMusic, BM_GETCHECK, 0, 0) == BST_CHECKED ? 1 : 0);
       wchar_t self[MAX_PATH], cmd[MAX_PATH + 16];
       GetModuleFileNameW(NULL, self, MAX_PATH);
       swprintf(cmd, MAX_PATH + 16, L"\"%ls\" /s", self);
@@ -595,7 +603,7 @@ static int runConfig(HINSTANCE inst, HWND owner) {
   wc.lpfnWndProc = CfgProc; wc.hInstance = inst; wc.lpszClassName = L"FractalScreenConfig";
   wc.hbrBackground = GetSysColorBrush(COLOR_WINDOW); wc.hCursor = LoadCursor(NULL, IDC_ARROW); wc.hIcon = LoadIconW(inst, MAKEINTRESOURCEW(1));
   RegisterClassW(&wc);
-  RECT r = {0, 0, 450, 286}; AdjustWindowRect(&r, WS_CAPTION | WS_SYSMENU, FALSE);
+  RECT r = {0, 0, 450, 322}; AdjustWindowRect(&r, WS_CAPTION | WS_SYSMENU, FALSE);
   int ww = r.right - r.left, hh = r.bottom - r.top;
   HWND h = CreateWindowExW(WS_EX_DLGMODALFRAME, wc.lpszClassName, L"FRACTALSCREEN settings", WS_CAPTION | WS_SYSMENU | WS_VISIBLE,
     (GetSystemMetrics(SM_CXSCREEN) - ww) / 2, (GetSystemMetrics(SM_CYSCREEN) - hh) / 2, ww, hh, owner, NULL, inst, NULL);
@@ -618,7 +626,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmd, int show) {
   const wchar_t *c = cmd; while (*c == ' ') c++;
   if (*c == '/' || *c == '-') {
     wchar_t k = (wchar_t)towlower(c[1]);
-    if (k == 's') return runSaver(inst, NULL);
+    if (k == 's') { int r = runSaver(inst, NULL); music_stop(); return r; }
     if (k == 'p') { HWND p = parseHwnd(c + 2); return p ? runSaver(inst, p) : 0; }
     if (k == 'c') { HWND o = parseHwnd(c + 2); return runConfig(inst, (o && IsWindow(o)) ? o : NULL); }
   }

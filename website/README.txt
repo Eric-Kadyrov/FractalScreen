@@ -11,6 +11,7 @@ WHAT'S IN THIS FOLDER
   api/                    License server (PHP): checks Stripe subscriptions
   contact.php, contact.js Contact form, emails contact@fractalscreen.com
   site.js                 Stripe checkout links and "Manage subscription" link  <-- you edit this
+  music.js                Cosmic focus music for the Web Player (generated live, follows device volume)
   consent.js              Cookie banner (Google Analytics only after "Accept")
   sw.js, manifest-*.webmanifest   Install the Web Player as an app / offline use
   .htaccess, robots.txt, sitemap.xml
@@ -82,6 +83,8 @@ WHAT THE WINDOWS INSTALLER DOES
      It opens the FRACTALSCREEN window: choose fractal, colors, speed, press Play now.
    - Adds "Play FRACTALSCREEN now" and "Uninstall FRACTALSCREEN" to the Start menu
    - Premium: asks for the license key (filled in automatically from the download page)
+   - Plays cosmic focus music in full screen (not in the small preview). Volume follows
+     Windows; it can be switched off in FRACTALSCREEN settings.
    Installing Premium over Free simply upgrades it.
 
 GOOD TO KNOW

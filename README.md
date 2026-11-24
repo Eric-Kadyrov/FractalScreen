@@ -22,12 +22,14 @@ Live at **https://fractalscreen.com**.
 - `api/`: license server in PHP (`verify.php`, `license.php`): checks Stripe subscriptions. Copy `config.example.php` to `config.php` on the server and add the Stripe key; `config.php` is never committed.
 - `site.js`: Stripe Payment Links and customer portal link
 - `consent.js`: cookie banner; Google Analytics runs only after visitors accept
+- `music.js`: cosmic focus music for the Web Player, generated live in the browser
 - `sw.js`, `manifest-*.webmanifest`: let visitors install the Web Player as an app
 - `README.txt`: step-by-step launch guide (Hostinger, Stripe, testing)
 
 ### `windows/`
 
 - `fractalscreen.c`: the screensaver (OpenGL fractals, settings window, free trial timer, Premium license check)
+- `music.h`: cosmic focus music synthesizer (pads, sub drone, FM stars, solar wind, pulse, reverb, echo), played through waveOut
 - `installer.nsi`: NSIS installer: sets the screensaver, adds desktop and Start menu icons
 - `res.rc`, `fractalscreen.ico`: icon and version info
 - `BUILD.txt`: how to build the `.scr` files and installers (MinGW-w64 + NSIS)

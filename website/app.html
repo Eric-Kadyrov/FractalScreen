@@ -174,8 +174,8 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
       </fieldset>
       <fieldset>
         <legend>Music</legend>
-        <label class="toggle"><span>Play focus music with the screensaver</span><input type="checkbox" id="music" checked></label>
-        <div class="row"><label for="volume">Volume</label><input type="range" id="volume" min="0" max="1" step="0.05" value="0.6"></div>
+        <label class="toggle"><span>Play cosmic focus music while fractals play</span><input type="checkbox" id="music" checked></label>
+        <p class="status" style="margin:0 0 14px">Deep, spacious ambient music, composed live so it never repeats. Use your device’s volume to make it louder or quieter.</p>
         <button type="button" class="btn ghost" id="musicBtn">Play music</button>
       </fieldset>
     </form>
@@ -191,6 +191,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
   <div class="hint" id="saverHint">Move the mouse or press any key to exit</div>
 </div>
 
+<script src="music.js"></script>
 <script>
 (function(){
 "use strict";
@@ -425,126 +426,7 @@ class Renderer{
   }
 }
 
-/* ---------- generative focus music ---------- */
-class Music{
-  constructor(){this.ctx=null;this.vol=.6;this.playing=false;this.timer=0;}
-  ensure(){
-    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
-    if(!this.ctx){this.ctx=new AC();this.build();}
-    if(this.ctx.state==="suspended")this.ctx.resume().catch(()=>{});
-    return true;
-  }
-  get unlocked(){return !!this.ctx&&this.ctx.state==="running";}
-  build(){
-    const c=this.ctx;
-    this.master=c.createGain();this.master.gain.value=0;
-    const comp=c.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=3;
-    this.master.connect(comp);comp.connect(c.destination);
-    // reverb from a generated impulse
-    const len=c.sampleRate*3.2,ir=c.createBuffer(2,len,c.sampleRate);
-    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
-    this.verb=c.createConvolver();this.verb.buffer=ir;this.verbSend=c.createGain();this.verbSend.gain.value=.35;
-    this.verbSend.connect(this.verb);this.verb.connect(this.master);
-    // dotted-eighth echo
-    this.bpm=92;this.six=60/this.bpm/4;
-    this.delay=c.createDelay(2);this.delay.delayTime.value=this.six*3;
-    const fb=c.createGain();fb.gain.value=.38;const dlp=c.createBiquadFilter();dlp.type="lowpass";dlp.frequency.value=2200;
-    this.delaySend=c.createGain();this.delaySend.gain.value=.4;
-    this.delaySend.connect(this.delay);this.delay.connect(dlp);dlp.connect(fb);fb.connect(this.delay);dlp.connect(this.master);dlp.connect(this.verbSend);
-    // buses
-    this.padBus=c.createGain();this.padBus.connect(this.master);this.padBus.connect(this.verbSend);
-    this.lfo=c.createOscillator();this.lfo.frequency.value=.06;this.lfoAmt=c.createGain();this.lfoAmt.gain.value=450;
-    this.lfo.connect(this.lfoAmt);this.lfo.start();
-    const nl=c.sampleRate*.2;this.noise=c.createBuffer(1,nl,c.sampleRate);const nd=this.noise.getChannelData(0);
-    for(let i=0;i<nl;i++)nd[i]=Math.random()*2-1;
-    this.chords=[
-      {bass:45,pad:[57,60,64,67,71]}, // Am9
-      {bass:41,pad:[53,57,60,64,67]}, // Fmaj9
-      {bass:48,pad:[55,60,64,67,71]}, // Cmaj7
-      {bass:40,pad:[55,59,62,64,67]}  // Em7
-    ];
-    this.arpPat=[0,2,4,2,1,3,4,3];
-  }
-  hz(m){return 440*Math.pow(2,(m-69)/12);}
-  setVolume(v){this.vol=v;if(this.ctx&&this.playing)this.master.gain.setTargetAtTime(v*.8,this.ctx.currentTime,.2);}
-  start(){
-    if(!this.ensure()||this.playing)return;
-    const c=this.ctx;this.playing=true;this.step=0;this.next=c.currentTime+.1;
-    this.master.gain.cancelScheduledValues(c.currentTime);this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);
-    this.master.gain.linearRampToValueAtTime(this.vol*.8,c.currentTime+3);
-    clearInterval(this.timer);this.timer=setInterval(()=>this.schedule(),25);
-  }
-  stop(){
-    if(!this.ctx||!this.playing)return;this.playing=false;
-    const c=this.ctx;this.master.gain.cancelScheduledValues(c.currentTime);
-    this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);this.master.gain.linearRampToValueAtTime(0,c.currentTime+1.5);
-    clearInterval(this.timer);this.timer=0;
-  }
-  schedule(){
-    const c=this.ctx;
-    while(this.next<c.currentTime+.15){this.play(this.step,this.next);this.next+=this.six;this.step++;}
-  }
-  play(s,t){
-    const chord=this.chords[Math.floor(s/32)%4],local=s%32,bar=Math.floor(s/16),q=s%16;
-    const section=bar%40;const drums=section>=4&&section<36,hats=section>=8&&section<34;
-    if(local===0)this.pad(chord.pad,t,this.six*32);
-    if(Math.random()<.85){
-      const tones=chord.pad,idx=this.arpPat[s%8]+(bar%4===3&&q>7?1:0);
-      const n=tones[idx%tones.length]+12*(1+Math.floor(idx/tones.length));
-      this.pluck(n,t,q%4===0?.16:.09);
-    }
-    if(drums&&q%4===0){this.kick(t);}
-    if(drums&&q%4===2)this.bass(chord.bass,t);
-    if(drums&&q===14&&Math.random()<.5)this.bass(chord.bass+12,t);
-    if(hats&&q%4===2)this.hat(t,.09);
-    else if(hats&&q%2===1&&Math.random()<.35)this.hat(t,.03);
-    if(Math.random()<.025)this.blip(t);
-  }
-  pad(notes,t,dur){
-    const c=this.ctx;
-    notes.forEach(m=>{
-      const f=c.createBiquadFilter();f.type="lowpass";f.frequency.value=900;f.Q.value=.7;this.lfoAmt.connect(f.frequency);
-      const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+1.6);
-      g.gain.setValueAtTime(.045,t+dur-.2);g.gain.linearRampToValueAtTime(0,t+dur+1.8);
-      f.connect(g);g.connect(this.padBus);
-      [-7,7].forEach(cents=>{const o=c.createOscillator();o.type="sawtooth";o.frequency.value=this.hz(m);o.detune.value=cents;
-        o.connect(f);o.start(t);o.stop(t+dur+2);});
-      setTimeout(()=>{try{this.lfoAmt.disconnect(f.frequency);}catch(e){}},(t-c.currentTime+dur+2.2)*1000);
-    });
-  }
-  pluck(m,t,vel){
-    const c=this.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
-    o.type="triangle";o.frequency.value=this.hz(m);f.type="lowpass";f.frequency.setValueAtTime(3200,t);f.frequency.exponentialRampToValueAtTime(700,t+.25);
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vel,t+.005);g.gain.exponentialRampToValueAtTime(.0005,t+.32);
-    o.connect(f);f.connect(g);g.connect(this.master);g.connect(this.delaySend);g.connect(this.verbSend);o.start(t);o.stop(t+.35);
-  }
-  kick(t){
-    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
-    o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(45,t+.12);
-    g.gain.setValueAtTime(.55,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);
-    o.connect(g);g.connect(this.master);o.start(t);o.stop(t+.4);
-    // gentle side-chain pump on the pads
-    this.padBus.gain.setValueAtTime(.45,t);this.padBus.gain.linearRampToValueAtTime(1,t+this.six*3);
-  }
-  bass(m,t){
-    const c=this.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
-    o.type="sawtooth";o.frequency.value=this.hz(m);f.type="lowpass";f.frequency.value=380;
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+this.six*1.8);
-    o.connect(f);f.connect(g);g.connect(this.master);o.start(t);o.stop(t+this.six*2);
-  }
-  hat(t,vel){
-    const c=this.ctx,src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
-    src.buffer=this.noise;f.type="highpass";f.frequency.value=7500;
-    g.gain.setValueAtTime(vel,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);
-    src.connect(f);f.connect(g);g.connect(this.master);g.connect(this.verbSend);src.start(t);src.stop(t+.06);
-  }
-  blip(t){
-    const c=this.ctx,o=c.createOscillator(),g=c.createGain();
-    o.type="sine";o.frequency.setValueAtTime(1800+Math.random()*1400,t);
-    g.gain.setValueAtTime(.035,t);g.gain.exponentialRampToValueAtTime(.0005,t+.12);
-    o.connect(g);g.connect(this.delaySend);g.connect(this.verbSend);o.start(t);o.stop(t+.15);
-  }
-}
+/* Music: see music.js */
 const music=new Music();
 
 /* ---------- settings ---------- */
@@ -555,13 +437,12 @@ const state={
   fractal:FRACTALS.some(f=>f.id===saved.fractal)?saved.fractal:"mandel",
   palette:PALETTES.some(p=>p.id===saved.palette)?saved.palette:"aurora",
   speed:+saved.speed||1, wait:+saved.wait||180, wakelock:saved.wakelock!==false, cycle:!!saved.cycle, enabled:saved.enabled!==false,
-  music:saved.music!==false, volume:saved.volume!=null?+saved.volume:.6
+  music:saved.music!==false
 };
 window.FS_state = state;
 document.getElementById("wakelock").checked = state.wakelock;
 if (EDITION === "free") {
-  state.music = false; state.cycle = false;
-  document.getElementById("music").closest("fieldset").hidden = true;
+  state.cycle = false;
   document.getElementById("cycle").closest("label").hidden = true;
 }
 const $=id=>document.getElementById(id);
@@ -580,11 +461,10 @@ PALETTES.forEach(p=>{
 document.querySelector(`input[name=fractal][value=${state.fractal}]`).checked=true;
 document.querySelector(`input[name=palette][value=${state.palette}]`).checked=true;
 $("speed").value=state.speed;$("wait").value=String(state.wait);$("cycle").checked=state.cycle;$("enabled").checked=state.enabled;
-$("music").checked=state.music;$("volume").value=state.volume;music.vol=state.volume;
+$("music").checked=state.music;
 const musicBtn=$("musicBtn");
 function syncMusicBtn(){musicBtn.textContent=music.playing?"Stop music":"Play music";}
 musicBtn.addEventListener("click",()=>{if(music.playing)music.stop();else music.start();syncMusicBtn();updateStatus();});
-$("volume").addEventListener("input",e=>{state.volume=+e.target.value;music.setVolume(state.volume);store.set(state);});
 // Browsers only allow sound after a click or key press on the page, so unlock audio on the first one.
 const unlock=()=>{music.ensure();setTimeout(updateStatus,100);};
 window.addEventListener("pointerdown",unlock,{once:true});window.addEventListener("keydown",unlock,{once:true});
@@ -610,7 +490,6 @@ $("settings").addEventListener("change",e=>{
   if(t.id==="wakelock")state.wakelock=t.checked;
   if(t.id==="enabled")state.enabled=t.checked;
   if(t.id==="music"){state.music=t.checked;if(!t.checked&&saverOn)music.stop();}
-  if(t.id==="volume")state.volume=+t.value;
   apply();resetIdle();
 });
 $("speed").addEventListener("input",e=>{state.speed=+e.target.value;preview.speed=state.speed;});
