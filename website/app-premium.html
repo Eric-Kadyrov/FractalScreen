@@ -182,7 +182,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
     </form>
   </div>
   <p class="note">The Web Player watches for inactivity while its page is open and visible, so keep it in a browser window or install it as an app. For a screensaver that starts by itself anytime, even with every window closed, <a href="download.html?plan=premium">download the Windows app</a>. The Mac app is coming soon.</p>
-  <p class="note"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="index.html#pricing" data-portal="">Manage subscription</a> · <a href="#cookies" data-cookie-settings="">Cookie settings</a> · <span id="fsVersion">Web Player version 2026-11-25</span></p>
+  <p class="note"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="index.html#pricing" data-portal="">Manage subscription</a> · <a href="#cookies" data-cookie-settings="">Cookie settings</a> · <span id="fsVersion">Web Player version 2026-11-25b</span></p>
 </div>
 
 <div id="saver" aria-hidden="true">
@@ -399,12 +399,12 @@ void main(){
     float sc=3.2*pow(1.5e-4,ph);
     vec2 c=vec2(-.743643887,.131825904)+rot(t*.03)*uv*sc;
     vec2 z=vec2(0.);float n=0.;bool esc=false;
-    for(int i=0;i<256;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    for(int i=0;i<500;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
     if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.025*sn+t*.04);}
   }else if(uType<1.5){
     vec2 c=.7885*vec2(cos(t*.12),sin(t*.12));
     vec2 z=rot(t*.02)*uv*2.6;float n=0.;bool esc=false;
-    for(int i=0;i<200;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    for(int i=0;i<300;i++){z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
     if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.035*sn+t*.05);}else{col=pal(t*.05+.5)*.12;}
   }else if(uType<2.5){
     float ph=.5-.5*cos(t*.06);
@@ -412,7 +412,7 @@ void main(){
     vec2 ctr=mix(vec2(-.45,-.5),vec2(-1.7615,-.0280),smoothstep(0.,.35,ph));
     vec2 c=ctr+vec2(uv.x,-uv.y)*sc;
     vec2 z=vec2(0.);float n=0.;bool esc=false;
-    for(int i=0;i<200;i++){z=abs(z);z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
+    for(int i=0;i<300;i++){z=abs(z);z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c;if(dot(z,z)>256.){esc=true;break;}n+=1.;}
     if(esc){float sn=n-log2(log2(dot(z,z)))+4.;col=pal(.03*sn+t*.04);}
   }else{
     float zoom=1.6+.9*sin(t*.07);
@@ -438,19 +438,19 @@ class Renderer{
     this.host=host;this.quality=quality;
     this.glc=document.createElement("canvas");this.c2=document.createElement("canvas");
     host.append(this.glc,this.c2);
-    // If the graphics card crashed here before, don't use it again; draw on the CPU instead.
-    let gpuOff=false;try{gpuOff=localStorage.getItem("fractalscreen-gpu")==="off";}catch(e){}
-    this.gl=null;
-    if(!gpuOff){try{const o={antialias:false,preserveDrawingBuffer:false,failIfMajorPerformanceCaveat:true,powerPreference:"low-power"};
-      this.gl=this.glc.getContext("webgl",o)||this.glc.getContext("experimental-webgl",o);}catch(e){this.gl=null;}}
+    try{localStorage.removeItem("fractalscreen-gpu");}catch(e){}   // older versions could switch the graphics card off for good
+    this.gl=null;this.scale=1;this.ft=0;this.fc=0;
+    try{const o={antialias:false,preserveDrawingBuffer:false,failIfMajorPerformanceCaveat:true};
+      this.gl=this.glc.getContext("webgl",o)||this.glc.getContext("experimental-webgl",o);}catch(e){this.gl=null;}
     // willReadFrequently keeps these canvases in ordinary memory, so they still work if the GPU fails
     this.ctx=this.c2.getContext("2d",{willReadFrequently:true});
     this.off=document.createElement("canvas");this.offCtx=this.off.getContext("2d",{willReadFrequently:true});
     this.t=Math.random()*30;this.speed=1;this.raf=0;this.last=0;
     if(this.gl&&!this.initGL())this.gl=null;   // shader didn't compile: fall back to drawing on the CPU
-    this.glc.addEventListener("webglcontextlost",e=>{e.preventDefault();this.gl=null;
-      try{localStorage.setItem("fractalscreen-gpu","off");}catch(err){}
+    this.glc.addEventListener("webglcontextlost",e=>{e.preventDefault();this.lostGL=this.gl;this.gl=null;this.scale=Math.max(.5,this.scale*.7);
       if(this.fractal)this.setFractal(this.fractal);});
+    this.glc.addEventListener("webglcontextrestored",()=>{this.gl=this.lostGL;this.lostGL=null;
+      if(this.gl&&!this.initGL())this.gl=null;if(this.fractal)this.setFractal(this.fractal);});
     this.setFractal(FRACTALS[0]);this.setPalette(PALETTES[0]);
   }
   initGL(){
@@ -475,18 +475,25 @@ class Renderer{
     this.c2.style.display=useGL?"none":"block";
   }
   setPalette(p){this.palette=p;}
-  size(cv,maxPx){
-    let dpr=Math.min(window.devicePixelRatio||1,2)*this.quality;
+  size(cv,scale){
+    const dpr=Math.min(window.devicePixelRatio||1,2)*this.quality*(scale||1);
     const cw=Math.max(1,cv.clientWidth),ch=Math.max(1,cv.clientHeight);
-    if(maxPx&&cw*ch*dpr*dpr>maxPx)dpr=Math.sqrt(maxPx/(cw*ch));   // keep the GPU workload modest
     const w=Math.max(1,Math.round(cw*dpr)),h=Math.max(1,Math.round(ch*dpr));
     if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
     return [w,h];
   }
   start(){if(this.raf)return;this.last=performance.now();const loop=now=>{
-      const dt=Math.min(.1,(now-this.last)/1000);this.last=now;this.t+=dt*this.speed;try{this.draw();}catch(e){console.warn(e);if(this.gl){this.gl=null;this.setFractal(this.fractal);}}this.raf=requestAnimationFrame(loop);};
+      const dt=Math.min(.1,(now-this.last)/1000);this.last=now;this.t+=dt*this.speed;this.adapt(dt);try{this.draw();}catch(e){console.warn(e);if(this.gl){this.gl=null;this.setFractal(this.fractal);}}this.raf=requestAnimationFrame(loop);};
     this.raf=requestAnimationFrame(loop);}
   stop(){cancelAnimationFrame(this.raf);this.raf=0;}
+  // Watch the frame rate: below ~24 fps, lower the resolution a little; when smooth again, go back up to full
+  adapt(dt){
+    if(!this.gl||this.fractal.kind!=="gl"||dt<=0)return;
+    this.ft=this.ft?this.ft*.92+dt*.08:dt;
+    if(++this.fc<45)return;this.fc=0;
+    if(this.ft>1/24&&this.scale>.5)this.scale=Math.max(.5,this.scale*.85);
+    else if(this.ft<1/50&&this.scale<1)this.scale=Math.min(1,this.scale*1.1);
+  }
   draw(){
     if(this.fractal.kind==="gl"&&this.gl)this.drawGL();
     else if(this.fractal.kind==="2d")this.drawTree();
@@ -494,7 +501,7 @@ class Renderer{
   }
   drawGL(){
     if(this.gl.isContextLost()){this.gl=null;this.setFractal(this.fractal);return;}
-    const gl=this.gl,[w,h]=this.size(this.glc,1.6e6),p=this.palette;
+    const gl=this.gl,[w,h]=this.size(this.glc,this.scale),p=this.palette;
     gl.viewport(0,0,w,h);
     gl.uniform2f(this.u.uRes,w,h);gl.uniform1f(this.u.uTime,this.t);gl.uniform1f(this.u.uType,this.fractal.type);
     gl.uniform3fv(this.u.uA,p.a);gl.uniform3fv(this.u.uB,p.b);gl.uniform3fv(this.u.uC,p.c);gl.uniform3fv(this.u.uD,p.d);
@@ -503,7 +510,7 @@ class Renderer{
   drawCPU(){
     // Same fractals as the shader, computed in JavaScript at a lower resolution and scaled up.
     const [W,H]=this.size(this.c2),p=this.palette,t=this.t,type=this.fractal.type;
-    const k=Math.min(1,Math.sqrt(45000/(W*H))),w=Math.max(40,Math.round(W*k)),h=Math.max(25,Math.round(H*k));
+    const k=Math.min(1,Math.sqrt(110000/(W*H))),w=Math.max(40,Math.round(W*k)),h=Math.max(25,Math.round(H*k));
     if(this.off.width!==w||this.off.height!==h){this.off.width=w;this.off.height=h;this.img=null;}
     if(!this.img)this.img=this.offCtx.createImageData(w,h);
     const px=this.img.data,m=Math.min(w,h),TAU=6.28318;
@@ -629,7 +636,7 @@ UNLOCK_EVENTS.forEach(ev=>window.addEventListener(ev,unlock,true));
 
 const byId=(arr,id)=>arr.find(o=>o.id===id);
 const preview=new Renderer($("previewHost"),1);
-const saverR=new Renderer($("saverHost"),.85);
+const saverR=new Renderer($("saverHost"),1);
 function apply(){
   const f=byId(FRACTALS,state.fractal),p=byId(PALETTES,state.palette);
   preview.setFractal(f);preview.setPalette(p);preview.speed=state.speed;
