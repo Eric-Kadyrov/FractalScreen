@@ -127,7 +127,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
 <body>
 <div class="wrap">
   <header>
-    <h1><a href="index.html" style="color:inherit;text-decoration:none">FRACTALSCREEN Web Player</a><span class="tag">Free trial</span></h1>
+    <h1><a href="index.html" style="color:inherit;text-decoration:none">FRACTALSCREEN Web Player</a><span class="tag">Free</span></h1>
     <p>Leave the Web Player open on your screen. When nobody has touched the mouse, keyboard or screen for a few minutes, it fills the screen with fractals. Move the mouse or press a key to come back.</p>
     <div class="head-actions" id="installBox" hidden><button class="btn" id="installBtn" type="button">Install the Web Player</button></div>
     <p class="status" id="licenseInfo" aria-live="polite" style="margin-top:16px"></p>
@@ -182,7 +182,7 @@ a.btn{display:inline-flex;align-items:center;text-decoration:none}
     </form>
   </div>
   <p class="note">The Web Player watches for inactivity while its page is open and visible, so keep it in a browser window or install it as an app. For a screensaver that starts by itself anytime, even with every window closed, <a href="download.html?plan=free">download the Windows app</a>. The Mac app is coming soon.</p>
-  <p class="note"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="index.html#pricing" data-portal="">Manage subscription</a> · <a href="#cookies" data-cookie-settings="">Cookie settings</a></p>
+  <p class="note"><a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refunds</a> · <a href="index.html#pricing" data-portal="">Manage subscription</a> · <a href="#cookies" data-cookie-settings="">Cookie settings</a> · <span id="fsVersion">Web Player version 2026-11-25</span></p>
 </div>
 
 <div id="saver" aria-hidden="true">
@@ -202,6 +202,7 @@ class Music {
   ensure() {
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
     if (!this.ctx) { this.ctx = new AC(); this.build(); }
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
     if (this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
     return true;
   }
@@ -622,8 +623,9 @@ const musicBtn=$("musicBtn");
 function syncMusicBtn(){musicBtn.textContent=music.playing?"Stop music":"Play music";}
 musicBtn.addEventListener("click",()=>{if(music.playing)music.stop();else music.start();syncMusicBtn();updateStatus();});
 // Browsers only allow sound after a click or key press on the page, so unlock audio on the first one.
-const unlock=()=>{music.ensure();setTimeout(updateStatus,100);};
-window.addEventListener("pointerdown",unlock,{once:true});window.addEventListener("keydown",unlock,{once:true});
+const UNLOCK_EVENTS=["pointerdown","mousedown","touchend","keydown","click"];
+const unlock=()=>{music.ensure();setTimeout(()=>{updateStatus();if(music.unlocked)UNLOCK_EVENTS.forEach(ev=>window.removeEventListener(ev,unlock,true));},150);};
+UNLOCK_EVENTS.forEach(ev=>window.addEventListener(ev,unlock,true));
 
 const byId=(arr,id)=>arr.find(o=>o.id===id);
 const preview=new Renderer($("previewHost"),1);
@@ -656,7 +658,7 @@ $("nextBtn").addEventListener("click",()=>{
 
 /* ---------- screensaver ---------- */
 const saver=$("saver"),fade=$("saverFade"),hint=$("saverHint"),nameEl=$("saverName");
-let saverOn=false,saverStarted=0,idleTimer=0,cycleTimer=0,hintTimer=0,lastActive=Date.now(),startPos=null;
+let musicHeld=false,saverOn=false,saverStarted=0,idleTimer=0,cycleTimer=0,hintTimer=0,lastActive=Date.now(),startPos=null;
 const fmtWait=s=>s<60?`${s} seconds`:(s===60?"1 minute":`${s/60} minutes`);
 function updateStatus(){
   const sn=$("soundNote"); if(sn) sn.hidden=!(state.music&&!music.unlocked);
@@ -672,7 +674,9 @@ function startSaver(fromPreview){
   saver.classList.add("on");saver.setAttribute("aria-hidden","false");preview.stop();saverR.start();
   if(state.music){music.start();syncMusicBtn();}
   if(window.FS_wakeOn)FS_wakeOn();
-  hint.style.opacity=1;clearTimeout(hintTimer);hintTimer=setTimeout(()=>{hint.style.opacity=0;nameEl.style.opacity=0;},3500);
+  musicHeld=!!(state.music&&music.ctx&&music.ctx.state!=="running");
+  hint.textContent=musicHeld?"Press any key to turn on the music. Move the mouse to exit.":"Move the mouse or press any key to exit";
+  hint.style.opacity=1;clearTimeout(hintTimer);hintTimer=setTimeout(()=>{hint.style.opacity=0;nameEl.style.opacity=0;},musicHeld?9000:3500);
   if(fromPreview&&saver.requestFullscreen){saver.requestFullscreen().catch(()=>{});}
   if(state.cycle){
     let i=FRACTALS.indexOf(f);
@@ -702,6 +706,10 @@ function activity(e){
       if(Math.hypot(e.clientX-startPos[0],e.clientY-startPos[1])<10)return;
     }
     e.preventDefault&&e.type==="keydown"&&e.preventDefault();
+    if(musicHeld&&(e.type==="keydown"||e.type==="mousedown"||e.type==="touchstart")){
+      musicHeld=false;music.ensure();hint.textContent="Music on. Move the mouse or press any key to exit";hint.style.opacity=1;
+      clearTimeout(hintTimer);hintTimer=setTimeout(()=>{hint.style.opacity=0;},2500);return;
+    }
     stopSaver();return;
   }
   resetIdle();
@@ -751,31 +759,9 @@ window.FS_unlock = function () {
   ["previewBtn", "nextBtn"].forEach(function (id) { var b = document.getElementById(id); if (b) b.disabled = false; });
 };
 (function () {
-  var DAYS = 28, KEY = "fractalscreen-trial-start", SEEN = "fractalscreen-trial-seen", start = 0, seen = 0;
-  try {
-    start = +localStorage.getItem(KEY) || 0; seen = +localStorage.getItem(SEEN) || 0;
-    if (!start) { start = Date.now(); localStorage.setItem(KEY, String(start)); }
-  } catch (e) { start = Date.now(); }
-  var info = document.getElementById("licenseInfo"), timer = 0;
-  function fmt(ms) {
-    var d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
-    if (d > 0) return d + (d === 1 ? " day, " : " days, ") + h + (h === 1 ? " hour" : " hours");
-    return h + (h === 1 ? " hour, " : " hours, ") + m + (m === 1 ? " minute" : " minutes");
-  }
-  function tick() {
-    var now = Math.max(Date.now(), seen);   // winding the clock back doesn't extend the trial
-    seen = now; try { localStorage.setItem(SEEN, String(now)); } catch (e) {}
-    var left = start + DAYS * 864e5 - now;
-    if (left > 0) {
-      info.innerHTML = "Free trial: <strong>" + fmt(left) + "</strong> left. <a href=\"index.html#pricing\">Get Premium</a> to keep it running.";
-    } else {
-      clearInterval(timer);
-      info.innerHTML = "Your 4-week free trial has ended.";
-      window.FS_lock("Your 4-week free trial has ended", "Get FRACTALSCREEN Premium to keep the fractals running.",
-        "<a class=\"btn\" href=\"index.html#pricing\">Get Premium</a>");
-    }
-  }
-  timer = setInterval(tick, 30000); tick();
+  // The free Web Player has no time limit: 3 fractals and 2 color schemes, forever.
+  document.getElementById("licenseInfo").innerHTML =
+    "Free forever: 3 fractals, 2 color schemes and cosmic focus music. <a href=\"index.html#pricing\">Upgrade to Premium</a> for all 5 fractals, 4 color schemes and cycling.";
 })();
 </script>
 <script src="site.js"></script>

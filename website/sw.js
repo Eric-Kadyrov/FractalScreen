@@ -1,7 +1,7 @@
 // FRACTALSCREEN Web Player: works offline after the first visit.
 // Pages are fetched fresh when online (so updates arrive), and served from the cache when offline.
 // License checks (/api) always go to the network.
-const CACHE = "fractalscreen-v7";
+const CACHE = "fractalscreen-v8";
 const FILES = ["/app.html", "/app-premium.html", "/favicon-32.png", "/apple-touch-icon.png", "/logo-192.png", "/logo-512.png"];
 
 self.addEventListener("install", (e) => {

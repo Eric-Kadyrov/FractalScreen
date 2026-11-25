@@ -36,7 +36,7 @@ Live at **https://fractalscreen.com**.
 
 ## Plans
 
-- **Free trial**: 3 fractals for 4 weeks, Windows app and Web Player
+- **Free**: Web Player free forever with 3 fractals; Windows app free for 2 weeks, then Upgrade to Premium
 - **Premium**: $4.99/month or $34.99/year, all fractals and colors, music, runs while subscribed
 - **Business**: $6 per screen per month, for screens in public spaces
 

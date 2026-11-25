@@ -3,7 +3,7 @@ FRACTALSCREEN website: launch guide (Hostinger + Stripe)
 
 WHAT'S IN THIS FOLDER
   index.html              Landing page
-  app.html                Web Player, free trial (3 fractals, 2 color schemes, 4 weeks)
+  app.html                Web Player, free forever (3 fractals, 2 color schemes)
   app-premium.html        Web Player, Premium (everything, including music)
   download.html           Download / thank-you page; shows the license key after checkout
   terms.html, privacy.html, refund.html, 404.html
@@ -66,9 +66,10 @@ WHAT'S IN THIS FOLDER
      appear within a minute.
 
 HOW THE TIME LIMITS WORK
-   Free trial: 3 fractals for 4 weeks (28 days) from the first install (Windows) or
-     first visit (Web Player). The time left is shown in the settings. Afterwards the
-     fractals stop and a reminder to get Premium is shown. Uninstalling doesn't reset it.
+   Web Player (free): free forever, 3 fractals and 2 color schemes, no time limit.
+   Windows app (free): 2-week trial (14 days) from the first install. The time left is
+     shown in the settings. Afterwards the fractals stop, the screensaver says the trial
+     has ended, and opening the app asks to Upgrade to Premium. Uninstalling doesn't reset it.
    Premium and Business: the license key is the Stripe subscription ID (sub_...).
      The app checks it with api/verify.php every 12 hours, and keeps working offline
      for 3 days past the paid period. Active means: active, trialing or past_due

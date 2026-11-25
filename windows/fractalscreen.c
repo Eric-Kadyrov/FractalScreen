@@ -19,7 +19,7 @@
 #ifndef API_BASE
 #define API_BASE L"https://fractalscreen.com/api"
 #endif
-#define TRIAL_DAYS 28          /* Free edition runs for 4 weeks */
+#define TRIAL_DAYS 14          /* Free edition runs for 2 weeks */
 #define GRACE_DAYS 3           /* Premium keeps working offline this long after the paid period */
 #define RECHECK_SECONDS (12 * 3600)
 
@@ -158,7 +158,7 @@ static void formatDate(DWORD unix, wchar_t *out, int cch) {
 }
 
 #ifndef PREMIUM
-/* ---------- Free edition: 4-week trial ---------- */
+/* ---------- Free edition: 2-week trial ---------- */
 static DWORD trialStart(void) {
   DWORD s = regGetK(TRIAL_KEY, L"Start", 0);
   if (!s) { s = (DWORD)time(NULL); regSetK(TRIAL_KEY, L"Start", s); }
@@ -246,8 +246,8 @@ static void decideAccess(void) {
   }
 #else
   if (trialSecondsLeft() <= 0) {
-    gLockTitle = L"Your 4-week free trial has ended";
-    gLockText = L"Get FRACTALSCREEN Premium to keep the fractals running.";
+    gLockTitle = L"Your 2-week free trial has ended";
+    gLockText = L"Upgrade to Premium to keep the fractals running: open FRACTALSCREEN from your desktop and choose Upgrade to Premium.";
   }
 #endif
 }
@@ -529,10 +529,10 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
     SendMessageW(hSpeed, CB_SETCURSEL, gSpeedSel, 0);
 #ifndef PREMIUM
     { wchar_t msg[200]; long left = trialSecondsLeft();
-      if (left > 0) swprintf(msg, 200, L"Free trial: %ld days, %ld hours left.\nPremium unlocks all 5 fractals, 4 color schemes and cycling.", left / 86400, (left % 86400) / 3600);
-      else swprintf(msg, 200, L"Your 4-week free trial has ended.\nGet Premium to keep the fractals running.");
+      if (left > 0) swprintf(msg, 200, L"Free trial: %ld days, %ld hours left.\nUpgrade to Premium to keep it running, with all 5 fractals, 4 color schemes and cycling.", left / 86400, (left % 86400) / 3600);
+      else swprintf(msg, 200, L"Your 2-week free trial has ended.\nUpgrade to Premium to keep the fractals running.");
       mk(h, L"STATIC", msg, 0, 20, 202, 410, 52, 0); }
-    mk(h, L"BUTTON", L"Get Premium", WS_TABSTOP, 20, 272, 110, 30, ID_UPGRADE);
+    mk(h, L"BUTTON", L"Upgrade to Premium", WS_TABSTOP, 20, 272, 140, 30, ID_UPGRADE);
 #else
     mk(h, L"STATIC", L"License key", 0, 20, 206, 90, 20, 0);
     { wchar_t key[96]; regGetStr(L"LicenseKey", key, 96);
@@ -543,12 +543,12 @@ static LRESULT CALLBACK CfgProc(HWND h, UINT m, WPARAM w, LPARAM l) {
       hLStatus = mk(h, L"STATIC", st, 0, 120, 232, 220, 34, ID_LSTATUS); }
 #endif
 #ifndef PREMIUM
-    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 140, 272, 100, 30, ID_PLAY);
+    mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 168, 272, 88, 30, ID_PLAY);
 #else
     mk(h, L"BUTTON", L"Play now", WS_TABSTOP, 20, 272, 100, 30, ID_PLAY);
 #endif
-    mk(h, L"BUTTON", L"OK", BS_DEFPUSHBUTTON | WS_TABSTOP, 260, 272, 80, 30, ID_OK);
-    mk(h, L"BUTTON", L"Cancel", WS_TABSTOP, 350, 272, 80, 30, ID_CANCEL);
+    mk(h, L"BUTTON", L"OK", BS_DEFPUSHBUTTON | WS_TABSTOP, 264, 272, 80, 30, ID_OK);
+    mk(h, L"BUTTON", L"Cancel", WS_TABSTOP, 352, 272, 80, 30, ID_CANCEL);
     return 0; }
   case WM_COMMAND:
     switch (LOWORD(w)) {
@@ -609,6 +609,12 @@ static int runConfig(HINSTANCE inst, HWND owner) {
     (GetSystemMetrics(SM_CXSCREEN) - ww) / 2, (GetSystemMetrics(SM_CYSCREEN) - hh) / 2, ww, hh, owner, NULL, inst, NULL);
   if (!h) return 1;
   if (owner) EnableWindow(owner, FALSE);
+#ifndef PREMIUM
+  if (trialSecondsLeft() <= 0 &&
+      MessageBoxW(h, L"Your 2-week free trial of FRACTALSCREEN has ended.\n\nUpgrade to Premium to keep the fractals and music running, with all 5 fractals and 4 color schemes.\n\nOpen the upgrade page now?",
+                  L"Upgrade to Premium", MB_YESNO | MB_ICONINFORMATION) == IDYES)
+    ShellExecuteW(NULL, L"open", SITE_URL, NULL, NULL, SW_SHOWNORMAL);
+#endif
   MSG msg;
   while (GetMessageW(&msg, NULL, 0, 0) > 0) { if (!IsDialogMessageW(h, &msg)) { TranslateMessage(&msg); DispatchMessageW(&msg); } }
   if (owner) { EnableWindow(owner, TRUE); SetForegroundWindow(owner); }
